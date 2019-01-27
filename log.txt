@@ -1,0 +1,63 @@
+
+NOTES
+__________________________________________________________________
+-the idea
+	-scrape pages for items
+	-look at ebay and craigslist to see if there are items there that are selling for more
+-ok so we are going to need to be able to scrape the page, lets see if python has some good scraping tools
+-so we do need to set up access to the at home clusters, and then we need to make sure to set up those emails. from there we can do other stuff like the arbitrage machine
+-what we should do is make a script that tries to connect to the machines locally and if that is not an option then we connect to shitech and specify the ports
+
+TODO
+__________________________________________________________________
+-scrape
+	-ebay
+	-craigslist
+	-facebook marketplace
+-someone has done this before, so lets see if we can imitate
+	-look up the amazon seller app
+	-fullfillment by amazon revenue calculator
+-sign up for amazon seller account
+-learn more about how retail arbitrage works
+
+
+DONE
+__________________________________________________________________
+-write a script that automatically connects us to the local version of our servers, and if that fails connect us remotely
+	-nope, it takes way too long for ssh to timeout for a local port, so we are just going to know when we need to connect remotely
+	-nevermind, I will just set up a timeout variable...I wonder if the router is smart enough to realize what its ip address is and route the traffic logically...idk
+	-yeah this worked
+-set up remote connection abilities to server1 and server2
+	-make sure duckdns gets updates
+	-we dont have to worry about this as long as one of the PC's updates it, and I am pretty sure server2 does this
+
+RESOURCES
+__________________________________________________________________
+-here is the list of marketplaces that we can sell to 
+	-Amazon, eBay, Jet, Walmart.com, Etsy, Craigslist, Facebook Marketplace, OfferUp, Let Go
+	-Amazon seems to be the best
+-arbitraging items
+	-https://onlinesellingexperiment.com/retail-arbitrage-2/
+		-set minimum earnings on item (guy has his at 3)
+		-make sure your return on investment is at least 50%
+		-they also recommend sticking to a minimum of 6 units of something when purchasing
+-Some profitable items to look for on Craigslist:
+    Littlest Pet Shop collections
+    Disney Halloween costumes
+    Plush stuffed animals
+    Direct sales companies distributor going out of business (Pampered Chef, Shaklee, Melaleuca, Arbonne, Scentsy, etc.)
+    Cast iron cookware
+    Pottery Barn items
+    Craft supplies 
+    electronics
+    cell phones
+    power tools	
+    computers
+    Christmas ornaments (Christopher Radko, Waterford, Lenox)
+    Vitamin blenders, KitchenAid small appliances
+    Designer handbags (could be fake)
+    Electronics (make sure they work properly and all parts are included)
+    High-end sunglasses like Ferragamo, RayBan, Prada, and Oakley as they could be fake
+    Autographed items (make sure it is authenticated)
+
+
