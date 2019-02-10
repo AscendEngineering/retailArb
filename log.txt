@@ -7,6 +7,44 @@ __________________________________________________________________
 -ok so we are going to need to be able to scrape the page, lets see if python has some good scraping tools
 -so we do need to set up access to the at home clusters, and then we need to make sure to set up those emails. from there we can do other stuff like the arbitrage machine
 -what we should do is make a script that tries to connect to the machines locally and if that is not an option then we connect to shitech and specify the ports
+-so it looks like I need to run this program a certain type of way, with their dumb command...whatever, ill try it but I wont liek it
+-okay so we are going to need to figurte out how to go to next pages...well we might not be able to find the url...which is weird...
+-ok so now that we have the links down and the title we can actually search google and get results back....oh but we also might want to integrate this into one of our scripts as well
+-yeah lets output all that stuff to a file, then we can iterate through it
+-damn this scrapy thing is kind of hard to work with tbh.
+-ok cool, now we have this database and now I need to think about how I am going to handle actually writing this data and recalling it.....so...how are we going to organize this datab
+    -we need an id field realistically. I do not want to have to rely on the
+-so this is how it should work. well, lets see if we can scrape some sort of id off of the page to store in our db
+    -there is an id that we can scrape
+-ok now that we have that we can correctly add items into mongodb, since we actually have a unique id now
+-haha well we also want to make sure that we are actually write to the database
+-so now we need to look at things from the database, find them in google shopping, and then ... well are we going to search by image? because if that is the case then we
+    need to figure out how to do that...it would definitely make things more accurate.....or we coud build out the rest of the loading from craigslist
+
+-ok so now that we have that done we are going to want to sort by new and then stop processing when we reach a pid that we have processed already, since that means we
+    have already processed all the rest, and it also means we can search through these every few minutes without raises suspicion
+-we should flesh out the part of this where we get the price off of ebay. should we use google or ebay? we need to do this before we just load up our db with a ton of useless
+    posts. because what good is that?
+-for right now, for this morning, lets concentrate on making sure that if a post occurs in multiple searches we dont just stop the search if we have seen it before
+-so we are not searching by image, or at least at this point. text seems to be the best way to search these so far.
+-so we need to do a google search in the category shopping, then scrape the results
+
+-so I bet most of our search returns will come from ebay, especially since they are used items. so I am wondering if we can just scrape ebay...worst comes to worst we can
+    submit a form to the backend of google,and it should hit us with a html page with the needed info
+
+-okay so ebay's api is a bit more advanced too since it is showing some tickets in the url that I am not completely familiar with, but
+    we might be able to capture an outgoing form and see how it is formed....scrapy will definitely have some type of form api..right? hopefully
+    -yeah it looks like we can capture the form...,fill out the properfields, then submit it back...either.
+    -but, we are going to need to figure out exactly what form it is
+    -okay so the scrapy form already seems to prepopulate the ones that we need, so we can just change the one that we need to....but I am unsure how I can point it at t
+    he right form
+    -so in the future we want this crawler to run immediatly after we find a new item.......but
+-so lets do this...I bet we can download the picture, then use the text to search on ebay, download ebay photos, then compare the photos and take the price of the ones that match the most
+-yeah we are going to need to download these fucking pictures.....fuck...this makes things a bit harder,b ut we need that accuracy
+-lets go ahead and work on the downloading of the pictures.
+-ok so at this second lets work on storing the query name as well as the filename
+-ugh so are we going to straight use a module to download this photo and then store it in some place "images folder"
+
 
 TODO
 __________________________________________________________________
@@ -19,6 +57,29 @@ __________________________________________________________________
 	-fullfillment by amazon revenue calculator
 -sign up for amazon seller account
 -learn more about how retail arbitrage works
+	-its pretty simple, but there are some rules that we should follow. but i think the main thing is just diving in
+-target the program to look at garage and moving sales too, these people are motivated to leave
+-target posts that say they need quick cash
+-update collectUrls method
+-create a nosql database
+-create a script to handle mongodb restart
+    -sudo service mongod status/restart/start/stop
+-connect the scraper to our db so that we can immediatly see if we have seen an item before
+-alternative to directly above, see if we can scan for items that were posted since the last time that we scaned
+    -we can select posts that were made in the last day, lets make cmd line argument that we can either do full scan or just the past day, then we can run this once per Day
+    -the only problem with this is that we will not get automatic updates. if we want autoatic updates we need to log the entries into mongodb on the fly
+-create some type of process where we go through and delete old posts that are not longer there
+-what if an item shows up in 2 different searches, but we stop at that item since the way we have it set up is that we stop scanning when we have already seen an item
+    that is in our database. we need to store the search query that we used as well so we can know whether we should stop or not. so we would look up an item's pid
+    and the search query used. if the pid matches but the search query does not then we keep scanning, if both match then we stop scanning
+-also, we should make sure that an item's PID is unique, because the url that is being shown includes the PID and the name of the item, so that is suspicious
+-make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
+-add it shipping costs
+-figure out a way that we can also search using certain things from the descriptions
+-we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
+-we need to push this stuff to github
+-make sure that we are not downloading the same photo twice
+
 
 
 DONE
@@ -30,12 +91,24 @@ __________________________________________________________________
 -set up remote connection abilities to server1 and server2
 	-make sure duckdns gets updates
 	-we dont have to worry about this as long as one of the PC's updates it, and I am pretty sure server2 does this
+-make sure we are not storing duplicate posts
 
 RESOURCES
 __________________________________________________________________
--here is the list of marketplaces that we can sell to 
+-image comparison good post
+    https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+-mongodb commands
+    -mongo: interactive shell
+    -sudo service mongod status/restart/start/stop: controls the mongo service
+    -db.collection_name.find().pretty(): print out all the things in a collection
+    -db.collection.remove({}): removes everything from a collection
+-My database: arbitragedb
+    -collections
+        craigslist
+-here is the list of marketplaces that we can sell to
 	-Amazon, eBay, Jet, Walmart.com, Etsy, Craigslist, Facebook Marketplace, OfferUp, Let Go
 	-Amazon seems to be the best
+	-even more sites: https://wellkeptwallet.com/best-apps-to-sell-stuff/
 -arbitraging items
 	-https://onlinesellingexperiment.com/retail-arbitrage-2/
 		-set minimum earnings on item (guy has his at 3)
@@ -48,11 +121,13 @@ __________________________________________________________________
     Direct sales companies distributor going out of business (Pampered Chef, Shaklee, Melaleuca, Arbonne, Scentsy, etc.)
     Cast iron cookware
     Pottery Barn items
-    Craft supplies 
+    Craft supplies
     electronics
     cell phones
-    power tools	
+    power tools
     computers
+    Mugs
+    Matchbox cars
     Christmas ornaments (Christopher Radko, Waterford, Lenox)
     Vitamin blenders, KitchenAid small appliances
     Designer handbags (could be fake)
@@ -61,3 +136,26 @@ __________________________________________________________________
     Autographed items (make sure it is authenticated)
 
 
+
+
+
+{ "_id" : ObjectId("5c5bc127e72298d8e316980c"), "title" : "2 NEW TRAVEL mugs,1 NEWcheese knife& 1 pack napkin IN A PICNIC BASKET", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/hsh/d/2-new-travel-mugs1-newcheese-knife-1/6791236154.html", "pid" : "679123615" }
+{ "_id" : ObjectId("5c5bc127e72298d8e316980e"), "title" : "2- Target Christmas Travel Mugs", "price" : 6, "link" : "https://chicago.craigslist.org/wcl/hsh/d/2-target-christmas-travel-mugs/6795698620.html", "pid" : "679569862" }
+{ "_id" : ObjectId("5c5bc128e72298d8e3169810"), "title" : "Nespresso Pure Collection Mugs & Saucers", "price" : 20, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-nespresso-pure-collection-mugs/6809950435.html", "pid" : "680995043" }
+{ "_id" : ObjectId("5c5bc128e72298d8e3169812"), "title" : "Set of 4 Ralph Lauren Polo 12 oz THOROUGHBRED CERAMIC MUGS - 1980's", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796345099.html", "pid" : "679634509" }
+{ "_id" : ObjectId("5c5bc128e72298d8e3169814"), "title" : "Set of 4 Ralph Lauren Polo 12 oz Signature Mugs - SPORT SERIES MUGS", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796341020.html", "pid" : "679634102" }
+{ "_id" : ObjectId("5c5bc128e72298d8e3169816"), "title" : "Beer mugs Bulls and Old Style...both for $18", "price" : 18, "link" : "https://chicago.craigslist.org/nwc/spo/d/park-ridge-beer-mugs-bulls-and-old/6804570038.html", "pid" : "680457003" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169818"), "title" : "Fiesta Dishes Bowls Mugs", "price" : 250, "link" : "https://chicago.craigslist.org/nwc/hsh/d/wheeling-fiesta-dishes-bowls-mugs/6812430827.html", "pid" : "681243082" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316981a"), "title" : "New Starbucks logo mugs & art mugs", "price" : 5, "link" : "https://chicago.craigslist.org/wcl/hsh/d/oak-park-new-starbucks-logo-mugs-art/6809722700.html", "pid" : "680972270" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316981c"), "title" : "Fuddruckers Mugs", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/elgin-fuddruckers-mugs/6810359591.html", "pid" : "681035959" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316981e"), "title" : "Coffee Mugs, Sugar & Creamer", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/hsh/d/clarendon-hills-coffee-mugs-sugar/6796413336.html", "pid" : "679641333" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169820"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/clt/d/chicago-royal-albert-bone-china-mugs/6802786510.html", "pid" : "680278651" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169822"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/hsh/d/royal-albert-bone-china-mugs-set-of-6/6799911541.html", "pid" : "679991154" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169824"), "title" : "Tiki Mug Drink Mix Set - Tikis / Sugar / Drink Umbrellas / Tiki  Plate", "price" : 25, "link" : "https://chicago.craigslist.org/nwc/hsh/d/chicago-tiki-mug-drink-mix-set-tikis/6810152414.html", "pid" : "681015241" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169826"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813225627.html", "pid" : "681322562" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169828"), "title" : "8 Vintage Pyrex Federal Eagle Mugs", "price" : 30, "link" : "https://chicago.craigslist.org/nwc/clt/d/8-vintage-pyrex-federal-eagle-mugs/6807492954.html", "pid" : "680749295" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316982a"), "title" : "Pfaltzgraff Flower Market Dishes", "price" : 175, "link" : "https://chicago.craigslist.org/nwc/hsh/d/elgin-pfaltzgraff-flower-market-dishes/6796190702.html", "pid" : "679619070" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316982c"), "title" : "Moving Sale: household Everything Elvis Presley Memorbilia-26 Pieces", "price" : 100, "link" : "https://chicago.craigslist.org/nwc/clt/d/wheeling-moving-sale-household/6811415664.html", "pid" : "681141566" }
+{ "_id" : ObjectId("5c5bc129e72298d8e316982e"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813260909.html", "pid" : "681326090" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169830"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813456714.html", "pid" : "681345671" }
+{ "_id" : ObjectId("5c5bc129e72298d8e3169832"), "title" : "Campbells Soup Mugs (2)", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/roselle-campbells-soup-mugs-2/6807510566.html", "pid" : "680751056" }
