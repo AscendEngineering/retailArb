@@ -6,6 +6,8 @@ from pymongo import MongoClient
 import re
 import urllib.request
 import constants
+from image_comp import most_similar
+
 
 def main():
 

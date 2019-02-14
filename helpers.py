@@ -1,19 +1,24 @@
 import urllib.request
 import re
 import constants
+import os.path
+from urllib.parse import urlparse
 
 
 #entry that will be stored in db
-def createEntry(pid,title,price,link):
+def createEntry(pid,title,price,query,format,link):
     price = re.sub("[^0-9]","", price)
     if(price == ""):
-        return None
+        price = "-1"
 
     retVal = {
+        'pid': pid,
         'title': title,
         'price': int(price),
+        'query': query,
+        'format':format,
         'link': link,
-        'pid': pid
+
     }
 
     return retVal
@@ -25,9 +30,15 @@ def getFileFormat(file):
     return temp[::-1]
 
 def downloadImage(src, name):
-    #get the file format
     format = getFileFormat(src)
-    #form the file location
-
     filelocation = constants.imagesFolder + name + '.' + format
-    urllib.request.urlretrieve(src,filelocation)
+
+    #file exists check
+    if(os.path.isfile(filelocation)):
+        return
+    else:
+        urllib.request.urlretrieve(src,filelocation)
+
+def getQuery(url):
+    parsed = urlparse(url)
+    return urllib.parse.parse_qs(parsed[4])['query'][0]

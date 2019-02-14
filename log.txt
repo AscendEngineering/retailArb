@@ -44,6 +44,29 @@ __________________________________________________________________
 -lets go ahead and work on the downloading of the pictures.
 -ok so at this second lets work on storing the query name as well as the filename
 -ugh so are we going to straight use a module to download this photo and then store it in some place "images folder"
+-SO we can probably make sure that no 2 photos are duplicated by checking to see if a file exists with that name in the images folder. that would probably
+    be easiest
+-alright so that seemed to work well...hopefully PIDs are not repeated, or else we are kind fucked
+-okay so now we are going to need to implement the search query in the database
+-so for right now it seems like we have something that will actually download everything that we need from craigslist, which is nice
+-now we actually have to work on the ebay part of this
+
+-I need to work out a way to get these ebay results, because we want the results, and the results that match fewer words.
+-then we need to grab those....should we store all of them and then compare??
+-well yeah what we should do is pull in all the entries.....and compare each one with the one in the db that we have....or does the compare method that
+-we are going to have gouing to accept a url, because in that case we might not want to pull those photos in
+-well hopefully the method can handle the url i
+-good news is that the image comparison works...bad news is that we need to resize images to compare them ising ssim....which is going to be interesting figuring that ones
+    out.
+-what I seem to be seeing is that ssim measures the quality of the photo in relation to another photo, and I am not sure if that is what we want exactly. i think
+    it was naive of me to think that this algorithm would just give me a score and say this is how similar these two images are. I need to maybe run a few different algorihtms
+    and then get a score from that
+-okay so lets create a suite of images that we can compare with each other and from there we can get what we are working with....oh, but they need to be the same size....,
+and that is not going to work with ssim....so we need a module to resize. obviosuly we will resize to the middle.tbh both of them will have to be resized.. we will take the
+smaller height and width, then resize both images to that size
+-okay, so it looks like this heightened image comaprison method takea a bit of time
+-okay, lets implement both and see which one is better with our test suite
+
 
 
 TODO
@@ -77,8 +100,16 @@ __________________________________________________________________
 -add it shipping costs
 -figure out a way that we can also search using certain things from the descriptions
 -we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
--we need to push this stuff to github
--make sure that we are not downloading the same photo twice
+-we also might need to store the image name for the photos, since they might be a different file format.....should we worry about this later???
+    -probably not...alright thats done..now we need to make sure that if this is not the current query then we keep scanning, but if it is then we stop
+-make sure that it actually works that when we see a duplicate post in a different query that we skip it if we have seen it but different query, but stop all together if
+    it is the same query
+-if the first ebay search does not return anything
+    -strip away all the unecessary search words when we are combing through ebay. numbers, filler words, anything that is not a brand name or product description, then use
+    that to search.
+    -then we should scan through the pictures, and if there is one that gives us a match above a certain point then we have a match
+-we should also create some test cases
+-find a way to make 2 images have the same dimensions
 
 
 
@@ -92,11 +123,19 @@ __________________________________________________________________
 	-make sure duckdns gets updates
 	-we dont have to worry about this as long as one of the PC's updates it, and I am pretty sure server2 does this
 -make sure we are not storing duplicate posts
+-we need to push this stuff to github
+-make sure that we are not downloading the same photo twice
 
 RESOURCES
 __________________________________________________________________
 -image comparison good post
     https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+-good video series on image comparisons
+    -https://www.youtube.com/watch?v=ND5vGDNvN0s&list=PL6Yc5OUgcoTlQuAdhtnByty15Ea9-cQly
+    -using ssim
+        -faster, not as accurate, need the image to be the same size
+    -using feature similarities
+        -slower, more accurate, images do not need to be the same size
 -mongodb commands
     -mongo: interactive shell
     -sudo service mongod status/restart/start/stop: controls the mongo service

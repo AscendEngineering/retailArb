@@ -2,3 +2,6 @@
 __init__.py
 __pycache__/
 *.pyc
+/test
+/images
+output.txt

@@ -2,7 +2,7 @@ import scrapy
 import sys
 from urllib.parse import urljoin
 from pymongo import MongoClient
-from helpers import createEntry,downloadImage
+from helpers import *
 
 
 class craigCrawler(scrapy.Spider):
@@ -29,16 +29,21 @@ class craigCrawler(scrapy.Spider):
     #parse the url
     def parse(self, response):
         url_list = []
+        query = getQuery(response.request.url)
 
         #get each post
         for result in response.css('li.result-row a::attr(href)').extract():
             if(result != "#" and result not in url_list):
 
-                #if we get an interrupt, exit
+                #if item is already there do not add it, if it matches the query exit out
                 if( self.collection.find({"pid":str(self.scrapPID(result))}).count() > 0 ):
-                    return None
-                else:
-                    yield scrapy.Request(result,callback=self.parsePage)
+                    for page in self.collection.find({"pid":str(self.scrapPID(result))}):
+                        if(page['query'] == query):
+                            return None
+                    break
+
+                #get the posts from the page
+                yield scrapy.Request(result,callback=self.parsePage,meta = {'query':query})
 
         #get the next page if it exists
         next = response.css('a.next::attr(href)').get()
@@ -47,30 +52,29 @@ class craigCrawler(scrapy.Spider):
 
 
 
-
-
     #scrape the posts page for what we need
     def parsePage(self, response):
+
+        #filter non-priced entries
         price = response.css('span.price::text').extract_first()
+        if(price is None):
+            return
+
+        #grab elements
         title = response.css('#titletextonly::text').extract_first()
         image = response.css('div.swipe-wrap div.first img::attr(src)').extract_first()
         link = response.request.url
         pid = self.scrapPID(link)
-
-        #make sure price is listed
-        if(price is None):
-            return
+        format = getFileFormat(image) if image!="" else "" 
+        query = response.request.meta['query']
 
         #store in the database
-        entry = createEntry(pid,title,price,link)
-        if(entry == None):
-            return
-        else:
-            downloadImage(image,pid)
+        entry = createEntry(pid,title,price,query,format,link)
+        downloadImage(image,pid)
 
-            key = {'pid': entry['pid']}
-            self.collection.update_one(key, {'$set':entry}, upsert=True)
-            print("Item added: " + entry['pid'])
+        key = {'pid': entry['pid']}
+        self.collection.update_one(key, {'$set':entry}, upsert=True)
+        print("Item added: " + entry['pid'])
 
 
     #gets the pid from the url
