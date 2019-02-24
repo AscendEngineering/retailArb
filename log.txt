@@ -66,7 +66,39 @@ and that is not going to work with ssim....so we need a module to resize. obvios
 smaller height and width, then resize both images to that size
 -okay, so it looks like this heightened image comaprison method takea a bit of time
 -okay, lets implement both and see which one is better with our test suite
+-ok, looks good. I found the algorithm that I wanted. I didnt even need to implement both algorihtms
+-so the next step is scrape ebay...which is going to be a pain in the ass
+-well what I actually want to do is look up, see if there are any results, and if not run it through a text filter and then try again
 
+-we should probably be able to load bullshit data onto the database...eh...whatveer
+-now I am wondering whether we are actually/.....well we are definitely searching the mongo db.
+-so we have 2 options....we can make these api requests that are designed by ebay...or we can use our own scrapy crawler to fill out these
+forms and make the calls themselves......if we make the calls ourselves it is guaranteed to be free, we can see relevant items, and we can make sure to get the item image
+-however, we might get a cease and assist, and it might not be as fast.....it might also not be as complex.
+-I am leaning towards just using scrapy...plus in my heart I somehow realize taht I am going to habe to pay for something wiht ebay api....theres a reason that
+    they are offering it..mmm i see. they are using it so that users can
+
+-so now we have to make a whole new scraper for ebay is what I am hearing.....which won't be crazy hard...we just need to fill out the form
+
+-ebay
+    -go to the main page, grab the form, fill it out, and submit....I am not sure how
+    -so we will use the from_response...but I am unsure how it will exactly know which form to fill out
+
+-okay so we are sitting pretty. we need to figure out how to take each item and either store it or run it through comparison...
+-either that...or we could do a poor mans way of doing this and just take the prices...average them out and then from there we can figure out what we really need to do
+    -shit thats actually not a bad idea..we can just run statistics on the prices...find out what the price is...factor out any outliers
+    -but there are two parts to this. because some results will end up yielding nothing on ebay. so we do need to implement a search term modifier. probably present in
+    the ebay crawler itself. so we need to implement something that will get rid of common words like "the"...idk about getting rid of numbers. dates might be
+    something that we want to keep....hmmm. lets worry about the text modifier later and worry about collecting those statistics now.
+    -we do not want to hold onto these statistics. all we need to do is collect and report. this also means that we can stop downloading the images from craigslist..but
+    if I have to be honest with you I might want those for the reports....hmmm...we also need to move some other scripts over to our other servers, but that
+    is besides the point.
+    -what we really need to do is map out how we are going to report whether there is a match or no. what we can do is pass in the price of the item
+    into the ebay crawler. then we run statistics and find out if it is higher or lower.....well....we can pass in the pid from craigslist...look it up in mongodb
+    get the price from there. this will make things a lot easier when we want to output whether something is more expensive or not. because then we have all
+    of the item info in the ebayCrawler itself. then...if we want to add items later we can just pass in the pid from the perspective website to get it's info.
+    this seems to make the most sense right now...so we will pass in the pid and go from there
+-so we just need to get the numbers until the related search section
 
 
 TODO
@@ -110,6 +142,8 @@ __________________________________________________________________
     -then we should scan through the pictures, and if there is one that gives us a match above a certain point then we have a match
 -we should also create some test cases
 -find a way to make 2 images have the same dimensions
+-we should probably add some error checking in here
+-filter out "wanted" posts
 
 
 
@@ -125,6 +159,18 @@ __________________________________________________________________
 -make sure we are not storing duplicate posts
 -we need to push this stuff to github
 -make sure that we are not downloading the same photo twice
+
+
+
+
+IMPROVE
+__________________________________________________________________
+-the biggest way that we can improve this right now is to improve the search between sites.
+    -we need the price between sites to be more accurate
+
+
+
+
 
 RESOURCES
 __________________________________________________________________
@@ -178,23 +224,4 @@ __________________________________________________________________
 
 
 
-{ "_id" : ObjectId("5c5bc127e72298d8e316980c"), "title" : "2 NEW TRAVEL mugs,1 NEWcheese knife& 1 pack napkin IN A PICNIC BASKET", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/hsh/d/2-new-travel-mugs1-newcheese-knife-1/6791236154.html", "pid" : "679123615" }
-{ "_id" : ObjectId("5c5bc127e72298d8e316980e"), "title" : "2- Target Christmas Travel Mugs", "price" : 6, "link" : "https://chicago.craigslist.org/wcl/hsh/d/2-target-christmas-travel-mugs/6795698620.html", "pid" : "679569862" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169810"), "title" : "Nespresso Pure Collection Mugs & Saucers", "price" : 20, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-nespresso-pure-collection-mugs/6809950435.html", "pid" : "680995043" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169812"), "title" : "Set of 4 Ralph Lauren Polo 12 oz THOROUGHBRED CERAMIC MUGS - 1980's", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796345099.html", "pid" : "679634509" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169814"), "title" : "Set of 4 Ralph Lauren Polo 12 oz Signature Mugs - SPORT SERIES MUGS", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796341020.html", "pid" : "679634102" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169816"), "title" : "Beer mugs Bulls and Old Style...both for $18", "price" : 18, "link" : "https://chicago.craigslist.org/nwc/spo/d/park-ridge-beer-mugs-bulls-and-old/6804570038.html", "pid" : "680457003" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169818"), "title" : "Fiesta Dishes Bowls Mugs", "price" : 250, "link" : "https://chicago.craigslist.org/nwc/hsh/d/wheeling-fiesta-dishes-bowls-mugs/6812430827.html", "pid" : "681243082" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981a"), "title" : "New Starbucks logo mugs & art mugs", "price" : 5, "link" : "https://chicago.craigslist.org/wcl/hsh/d/oak-park-new-starbucks-logo-mugs-art/6809722700.html", "pid" : "680972270" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981c"), "title" : "Fuddruckers Mugs", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/elgin-fuddruckers-mugs/6810359591.html", "pid" : "681035959" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981e"), "title" : "Coffee Mugs, Sugar & Creamer", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/hsh/d/clarendon-hills-coffee-mugs-sugar/6796413336.html", "pid" : "679641333" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169820"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/clt/d/chicago-royal-albert-bone-china-mugs/6802786510.html", "pid" : "680278651" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169822"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/hsh/d/royal-albert-bone-china-mugs-set-of-6/6799911541.html", "pid" : "679991154" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169824"), "title" : "Tiki Mug Drink Mix Set - Tikis / Sugar / Drink Umbrellas / Tiki  Plate", "price" : 25, "link" : "https://chicago.craigslist.org/nwc/hsh/d/chicago-tiki-mug-drink-mix-set-tikis/6810152414.html", "pid" : "681015241" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169826"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813225627.html", "pid" : "681322562" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169828"), "title" : "8 Vintage Pyrex Federal Eagle Mugs", "price" : 30, "link" : "https://chicago.craigslist.org/nwc/clt/d/8-vintage-pyrex-federal-eagle-mugs/6807492954.html", "pid" : "680749295" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982a"), "title" : "Pfaltzgraff Flower Market Dishes", "price" : 175, "link" : "https://chicago.craigslist.org/nwc/hsh/d/elgin-pfaltzgraff-flower-market-dishes/6796190702.html", "pid" : "679619070" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982c"), "title" : "Moving Sale: household Everything Elvis Presley Memorbilia-26 Pieces", "price" : 100, "link" : "https://chicago.craigslist.org/nwc/clt/d/wheeling-moving-sale-household/6811415664.html", "pid" : "681141566" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982e"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813260909.html", "pid" : "681326090" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169830"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813456714.html", "pid" : "681345671" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169832"), "title" : "Campbells Soup Mugs (2)", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/roselle-campbells-soup-mugs-2/6807510566.html", "pid" : "680751056" }
+{ "_id" : ObjectId("5c6a0aca4dc5050d7efa9ebd"), "pid" : "6817367571", "title" : "Bears Superbowl XX Stein Mug", "price" : 15, "query" : "mug", "format" : "jpg", "link" : "https://chicago.craigslist.org/wcl/clt/d/bears-superbowl-xx-stein-mug/6817367571.html" }

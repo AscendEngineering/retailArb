@@ -65,16 +65,22 @@ class craigCrawler(scrapy.Spider):
         image = response.css('div.swipe-wrap div.first img::attr(src)').extract_first()
         link = response.request.url
         pid = self.scrapPID(link)
-        format = getFileFormat(image) if image!="" else "" 
+        format = getFileFormat(image) if image!="" else ""
         query = response.request.meta['query']
 
         #store in the database
         entry = createEntry(pid,title,price,query,format,link)
         downloadImage(image,pid)
 
+        print("Item found: " + str(pid))
+
         key = {'pid': entry['pid']}
         self.collection.update_one(key, {'$set':entry}, upsert=True)
-        print("Item added: " + entry['pid'])
+
+        #open the output file and write
+        outfile = open(self.outputTo,'a')
+        outfile.write(entry['pid'] + '\n')
+        outfile.close()
 
 
     #gets the pid from the url

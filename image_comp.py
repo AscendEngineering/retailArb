@@ -40,27 +40,3 @@ def size_match_images(image1,image2):
     image2 = cv2.resize(image2,(new_width, new_height))
 
     return image1, image2
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    main()
