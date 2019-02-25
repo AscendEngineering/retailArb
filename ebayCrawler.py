@@ -25,7 +25,6 @@ class ebayCrawler(scrapy.Spider):
         if(searchItem == None):
             return
 
-
         #search ebay
         return scrapy.FormRequest.from_response(
             response,
@@ -59,4 +58,8 @@ class ebayCrawler(scrapy.Spider):
             prices.append(float(entry.replace('$','')))
             prices.sort()
 
-        print(median(prices))
+        #median price because I do not want a large outlier to throw of the target value
+        medianPrice = median(prices)
+
+        #store the estimated price in the databbase
+        writeToEbayDB(self.searchPid,medianPrice)

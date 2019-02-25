@@ -98,7 +98,12 @@ forms and make the calls themselves......if we make the calls ourselves it is gu
     get the price from there. this will make things a lot easier when we want to output whether something is more expensive or not. because then we have all
     of the item info in the ebayCrawler itself. then...if we want to add items later we can just pass in the pid from the perspective website to get it's info.
     this seems to make the most sense right now...so we will pass in the pid and go from there
--so we just need to get the numbers until the related search section
+-so we just need to get the numbers until the related search section. ah yeah this is where we left off last time. how do we know when to stop basically
+-so what I could basically do is grab the list, go through all the items, and if the id is a message then we stop. oh wait...I already figure this one out
+    -fuck yeah im smart
+-alright so now we need to store in the db
+-so now what. we have the predicted price in the db....we have the pid of the item. I guess we just go through now and see if there is an arbitrage opportunity between
+the two. and if there is then we can save that pid and create a spreadsheet of purchasing oppportunities
 
 
 TODO
@@ -144,6 +149,7 @@ __________________________________________________________________
 -find a way to make 2 images have the same dimensions
 -we should probably add some error checking in here
 -filter out "wanted" posts
+-create our own id system so that if there is a site that has the same pid as craigslist the two entries do not overlap
 
 
 
