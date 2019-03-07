@@ -2,14 +2,14 @@ import scrapy
 import sys
 from urllib.parse import urljoin
 from pymongo import MongoClient
-from helpers import *
+from arbHelpers import *
 
 
 class craigCrawler(scrapy.Spider):
     name = "craigCrawler"
     start_urls = []
     posts = []
-    outputTo = ""
+    outputPID = []
 
     def __init__(self, in_starturls,in_output):
         super(craigCrawler, self).__init__()
@@ -65,23 +65,22 @@ class craigCrawler(scrapy.Spider):
         image = response.css('div.swipe-wrap div.first img::attr(src)').extract_first()
         link = response.request.url
         pid = self.scrapPID(link)
-        format = getFileFormat(image) if image!="" else ""
         query = response.request.meta['query']
+        format = "" if image=="" else getFileFormat(image)
 
         #store in the database
         entry = createEntry(pid,title,price,query,format,link)
-        downloadImage(image,pid)
+        #downloadImage(image,pid) #we might need this later
 
         print("Item found: " + str(pid))
 
         key = {'pid': entry['pid']}
         self.collection.update_one(key, {'$set':entry}, upsert=True)
 
-        #open the output file and write
-        outfile = open(self.outputTo,'a')
-        outfile.write(entry['pid'] + '\n')
-        outfile.close()
-
+        #print pid to file to have it later
+        fout = open(self.outputTo,'a')
+        fout.write(pid + '\n')
+        fout.close()
 
     #gets the pid from the url
     def scrapPID(self,url):

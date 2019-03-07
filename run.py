@@ -1,83 +1,56 @@
 #!/usr/bin/env python
 
 from arb import craigCrawler
-from scrapy.crawler import CrawlerProcess
-import scrapy
-import tempfile
+from scrapy.crawler import CrawlerRunner
+from scrapy.utils.log import configure_logging
+from twisted.internet import reactor, defer
 from pymongo import MongoClient
-import re
 import urllib.request
 import constants
-from image_comp import most_similar
-from arbdb import writeToCraigDB,readFromCraigDB
+from arbdb import writeToCraigDB,readFromCraigDB,writeArb
+from arbHelpers import *
+import time
 from ebayCrawler import ebayCrawler
-
 
 def main():
 
-    #create tempfile to store output
-    file = tempfile.mkstemp()
-    filename = file[1]
+    #run crawler
+    urls_to_crawl = collectUrls()
 
-    # #run crawler
-    # urls_to_crawl = collectUrls()
-    # runCraigCrawler(urls_to_crawl,"output.txt")
+    #configure the Crawler
+    configure_logging()
+    runner = CrawlerRunner()
 
-    #run ebay crawler to look at each item that we pulled
-    #ebayLookup("output.txt")
+    @defer.inlineCallbacks
+    def crawl():
 
-    runEbayCrawler("6817367571")
+        outputfile = "outfile"
 
+        for url in urls_to_crawl:
+            #run the craigslist crawler
+            yield runner.crawl(craigCrawler,[url],outputfile)
 
+            #go through pids and crawl them in ebay
+            pidList = open(outputfile,'r')
 
-def ebayLookup(inputfile):
+            print("Craigslist crawler finished")
 
-    #for every entry in the file
-    itemList = open(inputfile,'r')
-    for entry in itemList:
-        #get the title from mongodb
-        title = readFromCraigDB(entry.rstrip())['title']
+            arbItems = []
 
-        #look up with that search title on ebay
+            for pid in pidList:
+                yield runner.crawl(ebayCrawler,pid.rstrip())
 
+                #detect an arbitrage
+                arbItem = detectArbitrage(pid)
+                if(arbItem != None):
+                    print("Arbitrage Found: " + pid)
+                    writeArb(arbItem)
 
+        reactor.stop()
 
-        #if there are results process them
-
-
-
-def runCraigCrawler(urls_to_crawl,outputfile):
-    print("Running Craigslist Crawler")
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-    })
-
-
-    process.crawl(craigCrawler,urls_to_crawl,outputfile) #change this file to "outputfile"
-    process.start()
-
-    print("Crawler finished")
-
-
-def runEbayCrawler(keyword):
-    print("Running Ebay Crawler")
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-    })
-
-    process.crawl(ebayCrawler,keyword)
-    process.start()
-
-
-def collectUrls():
-    retVal = []
-
-    for item in constants.items:
-        print(constants.template + urllib.request.quote(item))
-        retVal.append(constants.template + urllib.request.quote(item))
-
-    return retVal
-
+    #set up the crawlers and run
+    crawl()
+    reactor.run()
 
 
 if __name__ == '__main__':

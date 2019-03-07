@@ -1,8 +1,8 @@
 from pymongo import MongoClient
+import arbHelpers
 
 
 def writeToCraigDB(filename):
-    print("Writing to Craisglist DB...")
     #open the database
     client = MongoClient()
     collection = client['arbitragedb'].craigslist
@@ -20,24 +20,38 @@ def writeToCraigDB(filename):
 def readFromCraigDB(pid):
     client = MongoClient()
     db = client['arbitragedb']
-    retVal = db.craigslist.find_one({"pid" : pid })
+    retVal = db.craigslist.find_one({"pid": pid.rstrip()})
 
     return retVal
 
-def writeToEbayDB(pid,estimatedPrice):
+def readFromEbayDB(pid):
+    client = MongoClient()
+    db = client['arbitragedb']
+    retVal = db.ebay.find_one({"pid": pid.rstrip()})
+
+    return retVal
+
+def writeToEbayDB(pid,estimatedPrice,keywords,url):
 
     #sanity check
     if(pid == None or estimatedPrice==0):
         print("Error in writeToEbay")
         return
 
-    print("Writing to Ebay DB...")
-
     #connect to DB
     client = MongoClient()
     collection = client['arbitragedb'].ebay
 
     #write to db
-    entry = {"pid": pid, "estimatedPrice": estimatedPrice}
+    entry = {"pid": pid, "estimatedPrice": estimatedPrice, "keywords": keywords, "url": url}
     key = {"pid": pid}
     collection.update(key,entry,upsert=True)
+
+
+def writeArb(item):
+    currentcol = arbHelpers.getDate()
+
+    #connect to DB
+    client = MongoClient()
+    collection = client['arbitragedb'][str(currentcol) + "_arbs"]
+    collection.update({"pid":item['pid']},item,upsert=True)

@@ -103,53 +103,114 @@ forms and make the calls themselves......if we make the calls ourselves it is gu
     -fuck yeah im smart
 -alright so now we need to store in the db
 -so now what. we have the predicted price in the db....we have the pid of the item. I guess we just go through now and see if there is an arbitrage opportunity between
-the two. and if there is then we can save that pid and create a spreadsheet of purchasing oppportunities
+the two. and if there is then we can save that pid and create a spreadsheet of purchasing oppportunities. but we will essentially use the same temp file
+-alright, so we are going to need to figure out how to keep this thing running
+-well the next part is finding an arbitrage right? so after we look up those values on ebay we either
+need to look for that arbitrage immediatly, or we need to store that arbitrage and report it next time we
+go through the list......well
 
+-so we do need to figure out how to run the ebay crawler within the craigslist crawler since the Reactor has
+already started
+-so how are we going to get this done? we are going to need to either pass the process along or start that Runner thng that I saw....but we are going to have to attach to
+some process. so if we really want to optomize this...I think that is teh only option
+-huh, so now we are getting an error that the twisted connection is being disrupted in an unclean fashion. I wonder
+if this is happening because ebay is detecting that we are trying to scrape it. we can revert everything and try again to see if hitting ebay over and over again
+which sounds like a good idea to me,
+-well luckily it was not ebay. it is that fucking twisted library. but luckily online we found a way to make sure that we can call crawlers sequentially
+-to get this thing running lets just go ahead and have the craigslist run, then the ebay.
+-okay we need to flesh out some dates where this shit will get done
+
+-I remember what happened. the ebay crawler did not run for some reason. it was because there was not any pids in the list to process. So we will probably have to go back to the tempfile
+-okay so I am not seeing things being added to the database. I think it is because we are not finding anything in ebay. so we probably will have to implement the text  modifier so that
+    we are not looking up any bullshit words (which are known as stop words)
+    -but, before we add these, lets make sure that we are actually looking up these values
+-well right now we are not getting any values from the mongodb, so we need to figure that one out
+-yeah, so for some reason it is not returning....
+-okay, so now that we seem to have that resolved....we can should probably go ahead and integrate this natural language processor
+    -done, we just need to see if we have nothing returned, and if we have not, then search again.....
+        -remove symbols and stopwords
+        -remove symbols, stopwords, numerics
+-so our problem now is that we might end up in a recursive loop because of how we are handling this. because we are not keeping track of how many times we request
+    the object.
+-okay so now that we are getting the median of the prices. next we need to match up what is on craigslist with what is on ebay when we see that there is a difference
+-so after we run the ebay crawler I wonder if we should be then running a separate method that will pull from all the databases the pid and the prices then we need to rank them
+    -so......we need to figure out how we are going to store/order this... I imagine what I am
+ok, so now we have this sorted list. we can ne
+-so we are going to start the arbitrafe original and just pass in the urls one by one..I think that wont be too hard to change
+
+-we also need to figure out how we are going to log and organize all of this stuff.
+-right, so what we were doing here was trying to store all of the results very nicely. and we wanted to put them in collections that showed the date,
+and currently I can not seem to access the database
+-So, lets try to work with the database with just the numbers again, and see if that works
+
+-cool, so now we are storing things in a database. well, all of the arbs in a database.....now I guess what is left to do
+is to actually generate a report. What I would like to do is have this separate from the actually crawler program. this
+way when I want to just view arbitrage items, I do not have to stop the spider
 
 TODO
 __________________________________________________________________
 -scrape
-	-ebay
-	-craigslist
 	-facebook marketplace
--someone has done this before, so lets see if we can imitate
-	-look up the amazon seller app
-	-fullfillment by amazon revenue calculator
+
 -sign up for amazon seller account
+
 -learn more about how retail arbitrage works
 	-its pretty simple, but there are some rules that we should follow. but i think the main thing is just diving in
+
 -target the program to look at garage and moving sales too, these people are motivated to leave
+
 -target posts that say they need quick cash
--update collectUrls method
--create a nosql database
--create a script to handle mongodb restart
-    -sudo service mongod status/restart/start/stop
--connect the scraper to our db so that we can immediatly see if we have seen an item before
--alternative to directly above, see if we can scan for items that were posted since the last time that we scaned
-    -we can select posts that were made in the last day, lets make cmd line argument that we can either do full scan or just the past day, then we can run this once per Day
-    -the only problem with this is that we will not get automatic updates. if we want autoatic updates we need to log the entries into mongodb on the fly
+
 -create some type of process where we go through and delete old posts that are not longer there
--what if an item shows up in 2 different searches, but we stop at that item since the way we have it set up is that we stop scanning when we have already seen an item
-    that is in our database. we need to store the search query that we used as well so we can know whether we should stop or not. so we would look up an item's pid
-    and the search query used. if the pid matches but the search query does not then we keep scanning, if both match then we stop scanning
+
 -also, we should make sure that an item's PID is unique, because the url that is being shown includes the PID and the name of the item, so that is suspicious
+
 -make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
--add it shipping costs
+
+-add in shipping costs
+
 -figure out a way that we can also search using certain things from the descriptions
--we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
+
+
 -we also might need to store the image name for the photos, since they might be a different file format.....should we worry about this later???
     -probably not...alright thats done..now we need to make sure that if this is not the current query then we keep scanning, but if it is then we stop
+
 -make sure that it actually works that when we see a duplicate post in a different query that we skip it if we have seen it but different query, but stop all together if
     it is the same query
--if the first ebay search does not return anything
-    -strip away all the unecessary search words when we are combing through ebay. numbers, filler words, anything that is not a brand name or product description, then use
-    that to search.
-    -then we should scan through the pictures, and if there is one that gives us a match above a certain point then we have a match
+
 -we should also create some test cases
--find a way to make 2 images have the same dimensions
+
 -we should probably add some error checking in here
+
 -filter out "wanted" posts
+
 -create our own id system so that if there is a site that has the same pid as craigslist the two entries do not overlap
+
+-there are going to be sites that do not have the item that we are trying to look up,
+make sure we have a threshold for those sites
+
+-we should get rid of tempfile and come up with a file structure that we can go back and look at
+
+
+-fix error where we are splicing on an image file that does not exist
+
+-clean up/restructure files
+
+-implement DISABLED_COOKIES in scrapy
+
+-we need to figure out a way to filter out generic words
+    -"moving out"
+    -adjectives
+    -non-brand names (coffee maker)
+
+-if we can no find anything on ebay for an item, we should still write to the database that we tried to look for it
+
+-every morning delete the collection that is more than 7 days away
+
+-we can do this, store a timestamp date with all of the entries. then, everyday we will comb through the entries to see which ones have just exceeded the 7 day mark
+    -or something similar to this
+
+-change database collection back from testdb to dynamic dates
 
 
 
@@ -165,16 +226,44 @@ __________________________________________________________________
 -make sure we are not storing duplicate posts
 -we need to push this stuff to github
 -make sure that we are not downloading the same photo twice
-
-
+-scrape
+	-ebay
+	-craigslist
+-update collectUrls method
+-create a script to handle mongodb restart
+    -sudo service mongod status/restart/start/stop
+    -I decided not to do this, at least for right now. when we move it to our box then we will want to set up mongo in the beginning
+-create a nosql database
+-connect the scraper to our db so that we can immediatly see if we have seen an item before
+-alternative to directly above, see if we can scan for items that were posted since the last time that we scaned
+    -we can select posts that were made in the last day, lets make cmd line argument that we can either do full scan or just the past day, then we can run this once per Day
+    -the only problem with this is that we will not get automatic updates. if we want autoatic updates we need to log the entries into mongodb on the fly
+    -we ended up handling this by scanning until we have seen an item that we have seen before, and then we make sure that it is the same search that we have seen it in before
+-what if an item shows up in 2 different searches, but we stop at that item since the way we have it set up is that we stop scanning when we have already seen an item
+    that is in our database. we need to store the search query that we used as well so we can know whether we should stop or not. so we would look up an item's pid
+    and the search query used. if the pid matches but the search query does not then we keep scanning, if both match then we stop scanning
+    -we ended up handling this
+-we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
+    -we are not using these anymore, so it doesnt matter
+-if the first ebay search does not return anything
+    -strip away all the unecessary search words when we are combing through ebay. numbers, filler words, anything that is not a brand name or product description, then use
+    that to search.
+    -then we should scan through the pictures, and if there is one that gives us a match above a certain point then we have a match
+        -we did not do the pictures thing, but we do refine search keys in order to find something
+-find a way to make 2 images have the same dimensions
+-figure out a better way to stop this process when we start it (because right now thehy just keep going)
+    -eh, we do not have this problem ever since we changed to CrawlRunner
+-we should probably also store the search keywords that lead us to the search that landed us on ebay
+-store arbitrages in a database
 
 
 IMPROVE
 __________________________________________________________________
 -the biggest way that we can improve this right now is to improve the search between sites.
     -we need the price between sites to be more accurate
-
-
+-call the ebay spider immediatly after we find a new search on craigslist
+    -I think we will be implementing this immediatly
+-if there is an insanely good deal, alert my phone
 
 
 
