@@ -145,7 +145,12 @@ and currently I can not seem to access the database
 
 -cool, so now we are storing things in a database. well, all of the arbs in a database.....now I guess what is left to do
 is to actually generate a report. What I would like to do is have this separate from the actually crawler program. this
-way when I want to just view arbitrage items, I do not have to stop the spider
+way when I want to just view arbitrage items, I do not have to stop the spider....
+Cool, so this program shouldn't be that hard to make. but we do need to figure out how we want to present it
+-okay so this is the part where we need to make a program that will output all of the data that we want.
+-the thing that we need to work on is how we are going to form this request. I guess we just need to specify  a
+date and maybe we want to be able to specify uniquely the fields that we want to search. so, a date and field....just like
+in the dds requests...nice
 
 TODO
 __________________________________________________________________
