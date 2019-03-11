@@ -126,3 +126,6 @@ def detectArbitrage(pid):
 
 def getDate():
     return str(datetime.datetime.today()).split(' ')[0].replace('-','')
+
+def generateFilename():
+    return str(datetime.datetime.today()).replace('-','').replace(':','').replace(' ','-').split('.')[0]

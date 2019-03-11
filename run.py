@@ -24,6 +24,7 @@ def main():
     @defer.inlineCallbacks
     def crawl():
 
+        #specify the outfile
         outputfile = "outfile"
 
         for url in urls_to_crawl:

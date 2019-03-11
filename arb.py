@@ -3,13 +3,16 @@ import sys
 from urllib.parse import urljoin
 from pymongo import MongoClient
 from arbHelpers import *
+from user_agent import generate_user_agent
 
 
 class craigCrawler(scrapy.Spider):
     name = "craigCrawler"
     start_urls = []
-    posts = []
-    outputPID = []
+    custom_settings={
+        'COOKIES_ENABLED': False,
+        'USER_AGENT': generate_user_agent()
+    }
 
     def __init__(self, in_starturls,in_output):
         super(craigCrawler, self).__init__()
@@ -25,6 +28,7 @@ class craigCrawler(scrapy.Spider):
             exit(1)
         else:
             self.outputTo = in_output
+
 
     #parse the url
     def parse(self, response):

@@ -55,3 +55,14 @@ def writeArb(item):
     client = MongoClient()
     collection = client['arbitragedb'][str(currentcol) + "_arbs"]
     collection.update({"pid":item['pid']},item,upsert=True)
+
+#gives data, sorted by the best arbitrage at top, based on date
+def readArb(date):
+    currentcol = arbHelpers.getDate()
+
+    #connect to DB
+    client = MongoClient()
+    collection = client['arbitragedb'][str(currentcol) + "_arbs"]
+
+    #return and sort by descending
+    return collection.find().sort("arbPrice",-1)

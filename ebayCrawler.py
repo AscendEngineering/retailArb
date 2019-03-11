@@ -5,12 +5,16 @@ from pymongo import MongoClient
 import arbHelpers
 from arbdb import *
 from statistics import median
+from user_agent import generate_user_agent
 
 
 class ebayCrawler(scrapy.Spider):
     name = "ebayCrawler"
     start_urls = ["https://www.ebay.com/"]
-    posts = []
+    custom_settings={
+        'COOKIES_ENABLED': False,
+        'USER_AGENT': generate_user_agent()
+    }
 
 
     def __init__(self,in_pid):

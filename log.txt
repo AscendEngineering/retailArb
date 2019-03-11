@@ -152,6 +152,9 @@ Cool, so this program shouldn't be that hard to make. but we do need to figure o
 date and maybe we want to be able to specify uniquely the fields that we want to search. so, a date and field....just like
 in the dds requests...nice
 
+-so for this program we really will be diivng into how to extarct info from the db, especially data that needs to be sorted.
+
+
 TODO
 __________________________________________________________________
 -scrape
@@ -170,9 +173,7 @@ __________________________________________________________________
 
 -also, we should make sure that an item's PID is unique, because the url that is being shown includes the PID and the name of the item, so that is suspicious
 
--make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
 
--add in shipping costs
 
 -figure out a way that we can also search using certain things from the descriptions
 
@@ -196,7 +197,6 @@ make sure we have a threshold for those sites
 
 -we should get rid of tempfile and come up with a file structure that we can go back and look at
 
-
 -fix error where we are splicing on an image file that does not exist
 
 -clean up/restructure files
@@ -217,7 +217,7 @@ make sure we have a threshold for those sites
 
 -change database collection back from testdb to dynamic dates
 
-
+-implement keywords in collect.py
 
 DONE
 __________________________________________________________________
@@ -260,6 +260,8 @@ __________________________________________________________________
     -eh, we do not have this problem ever since we changed to CrawlRunner
 -we should probably also store the search keywords that lead us to the search that landed us on ebay
 -store arbitrages in a database
+-make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
+    -meh, we are half doing this now. we look up an item after we have been through all of its category on craigslist
 
 
 IMPROVE
@@ -269,8 +271,11 @@ __________________________________________________________________
 -call the ebay spider immediatly after we find a new search on craigslist
     -I think we will be implementing this immediatly
 -if there is an insanely good deal, alert my phone
-
-
+-integrate proper dates and times (date ranges, etc)
+-add in shipping costs
+-add in support to search for a whole category, like "video games"
+-add script to create list of items that are trending
+-have script automatically upload excel spreadsheet to google drive right before lunchtime
 
 RESOURCES
 __________________________________________________________________
