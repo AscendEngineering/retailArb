@@ -153,6 +153,11 @@ date and maybe we want to be able to specify uniquely the fields that we want to
 in the dds requests...nice
 
 -so for this program we really will be diivng into how to extarct info from the db, especially data that needs to be sorted.
+-so how are we going to factor in this filename? are we just going to create a new file, everytime....no...lets just not do that
+-instead lets just write to 2 files
+-fuck that, we are just making a temp file
+-we also really need to figure out how to clean up this stuff
+
 
 
 TODO
@@ -218,6 +223,8 @@ make sure we have a threshold for those sites
 -change database collection back from testdb to dynamic dates
 
 -implement keywords in collect.py
+
+-implement a better way to log our output, and switching it on and off
 
 DONE
 __________________________________________________________________

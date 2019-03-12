@@ -24,11 +24,10 @@ def createEntry(pid,title,price,query,format,link):
         'query': query,
         'format':format,
         'url': link,
-
+        'timestamp': str(datetime.datetime.utcnow())
     }
 
     return retVal
-
 
 def getFileFormat(file):
     temp = file[::-1]
@@ -118,7 +117,8 @@ def detectArbitrage(pid):
             "ebayUrl": ebayData["url"],
             "craigslistUrl": craigslistData["url"],
             "ebayKeywords":ebayData["keywords"],
-            "craigslistKeywords":craigslistData["title"]
+            "craigslistKeywords":craigslistData["title"],
+            "timestamp": str(datetime.datetime.utcnow())
         }
 
     return retVal

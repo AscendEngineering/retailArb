@@ -11,6 +11,8 @@ from arbdb import writeToCraigDB,readFromCraigDB,writeArb
 from arbHelpers import *
 import time
 from ebayCrawler import ebayCrawler
+import os
+import tempfile
 
 def main():
 
@@ -24,22 +26,23 @@ def main():
     @defer.inlineCallbacks
     def crawl():
 
-        #specify the outfile
-        outputfile = "outfile"
-
         for url in urls_to_crawl:
+
+            outputfile = tempfile.mkstemp()[1]
+
             #run the craigslist crawler
             yield runner.crawl(craigCrawler,[url],outputfile)
 
             #go through pids and crawl them in ebay
-            pidList = open(outputfile,'r')
+            if os.path.exists(outputfile):
+                pidList = open(outputfile,'r')
+            else:
+                continue
 
-            print("Craigslist crawler finished")
-
-            arbItems = []
-
+            #go through every found pid in the list
             for pid in pidList:
-                yield runner.crawl(ebayCrawler,pid.rstrip())
+                pid = pid.rstrip()
+                yield runner.crawl(ebayCrawler,pid)
 
                 #detect an arbitrage
                 arbItem = detectArbitrage(pid)
@@ -47,6 +50,7 @@ def main():
                     print("Arbitrage Found: " + pid)
                     writeArb(arbItem)
 
+            os.remove(outputfile)
         reactor.stop()
 
     #set up the crawlers and run

@@ -11,7 +11,8 @@ class craigCrawler(scrapy.Spider):
     start_urls = []
     custom_settings={
         'COOKIES_ENABLED': False,
-        'USER_AGENT': generate_user_agent()
+        'USER_AGENT': generate_user_agent(),
+        'LOG_ENABLED': False
     }
 
     def __init__(self, in_starturls,in_output):
@@ -32,12 +33,13 @@ class craigCrawler(scrapy.Spider):
 
     #parse the url
     def parse(self, response):
+        print("Cragslist Searching URL: " + response.request.url)
         url_list = []
         query = getQuery(response.request.url)
 
         #get each post
         for result in response.css('li.result-row a::attr(href)').extract():
-            if(result != "#" and result not in url_list):
+            if(result != "#"):
 
                 #if item is already there do not add it, if it matches the query exit out
                 if( self.collection.find({"pid":str(self.scrapPID(result))}).count() > 0 ):

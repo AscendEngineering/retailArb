@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import arbHelpers
+import datetime
 
 
 def writeToCraigDB(filename):
@@ -43,7 +44,7 @@ def writeToEbayDB(pid,estimatedPrice,keywords,url):
     collection = client['arbitragedb'].ebay
 
     #write to db
-    entry = {"pid": pid, "estimatedPrice": estimatedPrice, "keywords": keywords, "url": url}
+    entry = {"pid": pid, "estimatedPrice": estimatedPrice, "keywords": keywords, "url": url, "timestamp": str(datetime.datetime.utcnow())}
     key = {"pid": pid}
     collection.update(key,entry,upsert=True)
 
@@ -58,7 +59,7 @@ def writeArb(item):
 
 #gives data, sorted by the best arbitrage at top, based on date
 def readArb(date):
-    currentcol = arbHelpers.getDate()
+    currentcol = date
 
     #connect to DB
     client = MongoClient()

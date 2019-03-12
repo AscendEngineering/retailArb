@@ -13,7 +13,8 @@ class ebayCrawler(scrapy.Spider):
     start_urls = ["https://www.ebay.com/"]
     custom_settings={
         'COOKIES_ENABLED': False,
-        'USER_AGENT': generate_user_agent()
+        'USER_AGENT': generate_user_agent(),
+        'LOG_ENABLED': False
     }
 
 
@@ -38,6 +39,7 @@ class ebayCrawler(scrapy.Spider):
         )
 
     def scrapeResults(self, response):
+        print("Ebay Searching URL: " + response.request.url)
         #have to get num results to filter out related searches
         results = response.css('h1.srp-controls__count-heading::text').extract_first()
         keywords = arbHelpers.getEbaySearchKeywords(response.request.url,'_nkw')
@@ -100,4 +102,5 @@ class ebayCrawler(scrapy.Spider):
         medianPrice = median(prices)
 
         #store the estimated price in the databbase
+        print("Ebay Item Found: " + self.searchPid)
         writeToEbayDB(self.searchPid,medianPrice,keywords,response.request.url)

@@ -7,6 +7,7 @@ __pycache__/
 output.txt
 arb_results/
 outfile
+outfiles/
 output
 tempout
 tempout.txt
@@ -14,3 +15,5 @@ tempoutput.txt
 test.py
 testingLib.py
 user_agents.txt
+runOutput/
+test.txt

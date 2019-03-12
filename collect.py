@@ -18,7 +18,7 @@ def main():
     #collectAll Arbs
     print("Collecting...")
     file = constants.resultsFolder+generateFilename()+".csv"
-    collectArbs(file,getDate(),"")
+    collectArbs(file,date,"")
     print("...finished")
 
 def collectArbs(file,date,keywords):
