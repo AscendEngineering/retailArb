@@ -129,13 +129,13 @@ def generateFilename():
     return str(datetime.datetime.today()).replace('-','').replace(':','').replace(' ','-').split('.')[0]
 
 def getNum(input):
-    print(input)
+    input=input.rstrip()
     num = ""
     for char in input:
-        if(char.isnumeric()):
+        if(char.isdigit()):
             num += char
         elif(char == '.'):
             num += char
-
-    print(num)
+    if(len(num) <= 2):
+        num+=".00"
     return float(num)

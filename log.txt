@@ -250,7 +250,9 @@ make sure we have a threshold for those sites
 
 -this dynamic search list actually looks pretty necessary right now
 
--log the output of the spider and print statements to 2 different locations
+-log the output of the spider and print statements to 2 different locations, and have those save dynamically
+    -this is going to be hard since we run the crawlers so many times again and again
+    -this would lead to a lot of separate files, and probably a lot of confusion about what the fuck actually ran
 
 
 

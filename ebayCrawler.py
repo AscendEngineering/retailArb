@@ -14,8 +14,7 @@ class ebayCrawler(scrapy.Spider):
     custom_settings={
         'COOKIES_ENABLED': False,
         'USER_AGENT': generate_user_agent(),
-        'LOG_ENABLED': True,
-        'LOG_FILE': 'output'
+        'LOG_ENABLED': False
     }
 
 

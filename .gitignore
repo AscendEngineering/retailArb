@@ -18,3 +18,4 @@ user_agents.txt
 runOutput/
 test.txt
 credentials.json
+logs/

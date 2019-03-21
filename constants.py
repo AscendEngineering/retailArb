@@ -5,6 +5,9 @@ template = "https://chicago.craigslist.org/search/sss?sort=date&search_distance=
 
 imagesFolder = 'images/'
 
+scrapy_output="/logs/scrapy"
+program_journal="/logs/program_journal"
+
 items = [
 "caffeine"
 # "mugs",
