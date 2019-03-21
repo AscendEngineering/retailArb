@@ -226,6 +226,37 @@ make sure we have a threshold for those sites
 
 -implement a better way to log our output, and switching it on and off
 
+-the biggest way that we can improve this right now is to improve the search between sites.
+    -we need the price between sites to be more accurate
+
+-call the ebay spider immediatly after we find a new search on craigslist
+    -I think we will be implementing this immediatly
+
+-if there is an insanely good deal, alert my phone
+
+-integrate proper dates and times (date ranges, etc)
+
+-add in shipping costs
+
+-add in support to search for a whole category, like "video games"
+
+-add script to create list of items that are trending
+
+-have script automatically upload excel spreadsheet to google drive right before lunchtime
+
+-add a progress bar (or any type of process indication)
+
+-figure out a better way to log the search keywords that you are generating urls for
+
+-on ebay, make sure that we are only looking for used items
+
+-throw out ebay searches that have $1 for the price
+
+-this dynamic search list actually looks pretty necessary right now
+
+-figure out why we are not propogating up more errors
+
+
 DONE
 __________________________________________________________________
 -write a script that automatically connects us to the local version of our servers, and if that fails connect us remotely
@@ -271,18 +302,6 @@ __________________________________________________________________
     -meh, we are half doing this now. we look up an item after we have been through all of its category on craigslist
 
 
-IMPROVE
-__________________________________________________________________
--the biggest way that we can improve this right now is to improve the search between sites.
-    -we need the price between sites to be more accurate
--call the ebay spider immediatly after we find a new search on craigslist
-    -I think we will be implementing this immediatly
--if there is an insanely good deal, alert my phone
--integrate proper dates and times (date ranges, etc)
--add in shipping costs
--add in support to search for a whole category, like "video games"
--add script to create list of items that are trending
--have script automatically upload excel spreadsheet to google drive right before lunchtime
 
 RESOURCES
 __________________________________________________________________

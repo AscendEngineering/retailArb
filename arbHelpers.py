@@ -3,8 +3,6 @@ import re
 import constants
 import os.path
 from urllib.parse import urlparse,parse_qs
-from scrapy.crawler import CrawlerProcess
-from ebayCrawler import ebayCrawler
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer

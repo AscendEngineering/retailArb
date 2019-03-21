@@ -62,8 +62,8 @@ class craigCrawler(scrapy.Spider):
     def parsePage(self, response):
 
         #filter non-priced entries
-        price = response.css('span.price::text').extract_first()
-        if(price is None):
+        price = response.css('span.price::text').extract_first().rstrip()
+        if(price is None or price == "$1"): #most searhces with $1 are bullshit for attention
             return
 
         #grab elements

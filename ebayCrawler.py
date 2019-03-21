@@ -10,7 +10,7 @@ from user_agent import generate_user_agent
 
 class ebayCrawler(scrapy.Spider):
     name = "ebayCrawler"
-    start_urls = ["https://www.ebay.com/"]
+    start_urls = ["https://www.ebay.com/sch/ebayadvsearch"]
     custom_settings={
         'COOKIES_ENABLED': False,
         'USER_AGENT': generate_user_agent(),
@@ -33,7 +33,7 @@ class ebayCrawler(scrapy.Spider):
         #search ebay
         return scrapy.FormRequest.from_response(
             response,
-            formdata={'_nkw': searchItem['title']},
+            formdata={'_nkw': searchItem['title'],'LH_ItemCondition':'4'}, #second argument is for used products
             meta={"iter": 0},
             callback=self.scrapeResults
         )
@@ -41,17 +41,19 @@ class ebayCrawler(scrapy.Spider):
     def scrapeResults(self, response):
         print("Ebay Searching URL: " + response.request.url)
         #have to get num results to filter out related searches
-        results = response.css('h1.srp-controls__count-heading::text').extract_first()
+        results = response.css('#cbelm > div.clt > h1 > span.rcnt::text').extract_first()
         keywords = arbHelpers.getEbaySearchKeywords(response.request.url,'_nkw')
         numResults = -1
         prices = []
+
+        print(results)
 
         if(results==None):
             print("No Results Found(" + str(iter) + "): " + keywords)
             writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
             return
         else:
-            numResults = int(results[:results.find(' ')].rstrip().replace(',',''))
+            numResults = int(results)
 
         #if we do not have any results, modify keywords and try again
         if(numResults==0):
@@ -83,9 +85,10 @@ class ebayCrawler(scrapy.Spider):
 
 
         cntr = 0
-        for entry in response.css('span.s-item__price::text').extract():
 
-            #if we have gone through all relevant searches exit
+        for entry in response.css('li.lvprice.prc > span.bold::text').extract():
+
+            #if we have gone through all relevant searches exit 
             if(cntr >= numResults):
                 break
             cntr+=1
