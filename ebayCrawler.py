@@ -14,7 +14,8 @@ class ebayCrawler(scrapy.Spider):
     custom_settings={
         'COOKIES_ENABLED': False,
         'USER_AGENT': generate_user_agent(),
-        'LOG_ENABLED': False
+        'LOG_ENABLED': True,
+        'LOG_FILE': 'output'
     }
 
 
@@ -48,6 +49,7 @@ class ebayCrawler(scrapy.Spider):
 
         print(results)
 
+        #if there are no results still enter empty result in db
         if(results==None):
             print("No Results Found(" + str(iter) + "): " + keywords)
             writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
@@ -84,11 +86,11 @@ class ebayCrawler(scrapy.Spider):
             )
 
 
+        #get the median price
         cntr = 0
-
         for entry in response.css('li.lvprice.prc > span.bold::text').extract():
 
-            #if we have gone through all relevant searches exit 
+            #if we have gone through all relevant searches exit
             if(cntr >= numResults):
                 break
             cntr+=1
@@ -97,7 +99,7 @@ class ebayCrawler(scrapy.Spider):
                 print("Error in scrapeResults algorithm")
                 exit(1)
 
-            prices.append(float(entry.replace('$','').replace(',','')))
+            prices.append(arbHelpers.getNum(entry))
 
             prices.sort()
 

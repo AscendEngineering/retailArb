@@ -16,7 +16,7 @@ def writeToCraigDB(filename):
                 continue
             else:
                 key = {'pid': entry['pid']}
-                status = collection.update(key,entry,upsert=True)
+                status = collection.update_one(key,{"$set":entry},upsert=True)
 
                 #sanity check
                 if(status.acknowledged == False):
@@ -50,7 +50,7 @@ def writeToEbayDB(pid,estimatedPrice,keywords,url):
     #write to db
     entry = {"pid": pid, "estimatedPrice": estimatedPrice, "keywords": keywords, "url": url, "timestamp": str(datetime.datetime.utcnow())}
     key = {"pid": pid}
-    status = collection.update_one(key,entry,upsert=True)
+    status = collection.update_one(key,{"$set": entry},upsert=True)
 
     #sanity check
     if(status.acknowledged == False):
@@ -63,12 +63,12 @@ def writeArb(item):
     #connect to DB
     client = MongoClient()
     collection = client['arbitragedb'][str(currentcol) + "_arbs"]
-    status = collection.update_one({"pid":item['pid']},item,upsert=True)
+    key = {"pid": item['pid']}
+    status = collection.update_one(key, {"$set":item}, upsert=True)
 
     #sanity check
     if(status.acknowledged == False):
         print("Error writing Arbitrage")
-
 
 #gives data, sorted by the best arbitrage at top, based on date
 def readArb(date):

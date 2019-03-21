@@ -248,13 +248,11 @@ make sure we have a threshold for those sites
 
 -figure out a better way to log the search keywords that you are generating urls for
 
--on ebay, make sure that we are only looking for used items
-
--throw out ebay searches that have $1 for the price
-
 -this dynamic search list actually looks pretty necessary right now
 
--figure out why we are not propogating up more errors
+-log the output of the spider and print statements to 2 different locations
+
+
 
 
 DONE
@@ -300,8 +298,10 @@ __________________________________________________________________
 -store arbitrages in a database
 -make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
     -meh, we are half doing this now. we look up an item after we have been through all of its category on craigslist
-
-
+-figure out why we are not propogating up more errors
+    -well we are, but we turned logging off so it really doesnt matter since we cant see the fucking logs you idiot
+-on ebay, make sure that we are only looking for used items
+-throw out ebay searches that have $1 for the price
 
 RESOURCES
 __________________________________________________________________

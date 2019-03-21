@@ -6,7 +6,7 @@ template = "https://chicago.craigslist.org/search/sss?sort=date&search_distance=
 imagesFolder = 'images/'
 
 items = [
-"test"
+"caffeine"
 # "mugs",
 # "mug",
 # "matchbox",
