@@ -128,7 +128,7 @@ def getDate():
 def generateFilename():
     return str(datetime.datetime.today()).replace('-','').replace(':','').replace(' ','-').split('.')[0]
 
-def getNum(input):
+def getFloatNum(input):
     input=input.rstrip()
     num = ""
     for char in input:
@@ -139,3 +139,11 @@ def getNum(input):
     if(len(num) <= 2):
         num+=".00"
     return float(num)
+
+def getIntNum(input):
+    input=input.rstrip()
+    num = ""
+    for char in input:
+        if(char.isdigit()):
+            num += char
+    return int(num)

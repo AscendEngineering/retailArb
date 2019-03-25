@@ -157,7 +157,9 @@ in the dds requests...nice
 -instead lets just write to 2 files
 -fuck that, we are just making a temp file
 -we also really need to figure out how to clean up this stuff
-
+-yeah, we need to clean this stuff up
+-yeah, so lets just get all of the connections, and then at the end if there are no items left we will drop the database
+-we should change the timestamp to a number, not a string
 
 
 TODO
@@ -174,22 +176,9 @@ __________________________________________________________________
 
 -target posts that say they need quick cash
 
--create some type of process where we go through and delete old posts that are not longer there
-
 -also, we should make sure that an item's PID is unique, because the url that is being shown includes the PID and the name of the item, so that is suspicious
 
-
-
 -figure out a way that we can also search using certain things from the descriptions
-
-
--we also might need to store the image name for the photos, since they might be a different file format.....should we worry about this later???
-    -probably not...alright thats done..now we need to make sure that if this is not the current query then we keep scanning, but if it is then we stop
-
--make sure that it actually works that when we see a duplicate post in a different query that we skip it if we have seen it but different query, but stop all together if
-    it is the same query
-
--we should also create some test cases
 
 -we should probably add some error checking in here
 
@@ -197,28 +186,20 @@ __________________________________________________________________
 
 -create our own id system so that if there is a site that has the same pid as craigslist the two entries do not overlap
 
--there are going to be sites that do not have the item that we are trying to look up,
-make sure we have a threshold for those sites
-
--we should get rid of tempfile and come up with a file structure that we can go back and look at
-
 -fix error where we are splicing on an image file that does not exist
-
--clean up/restructure files
-
--implement DISABLED_COOKIES in scrapy
+    -we want to make sure that we are not erroring out on this and stopping the arbitrage
 
 -we need to figure out a way to filter out generic words
     -"moving out"
     -adjectives
     -non-brand names (coffee maker)
 
--if we can no find anything on ebay for an item, we should still write to the database that we tried to look for it
+
 
 -every morning delete the collection that is more than 7 days away
+    -well, not this specific, but we should find a way to automate this
 
--we can do this, store a timestamp date with all of the entries. then, everyday we will comb through the entries to see which ones have just exceeded the 7 day mark
-    -or something similar to this
+
 
 -change database collection back from testdb to dynamic dates
 
@@ -228,13 +209,6 @@ make sure we have a threshold for those sites
 
 -the biggest way that we can improve this right now is to improve the search between sites.
     -we need the price between sites to be more accurate
-
--call the ebay spider immediatly after we find a new search on craigslist
-    -I think we will be implementing this immediatly
-
--if there is an insanely good deal, alert my phone
-
--integrate proper dates and times (date ranges, etc)
 
 -add in shipping costs
 
@@ -304,6 +278,33 @@ __________________________________________________________________
     -well we are, but we turned logging off so it really doesnt matter since we cant see the fucking logs you idiot
 -on ebay, make sure that we are only looking for used items
 -throw out ebay searches that have $1 for the price
+-create some type of process where we go through and delete old posts that are not longer there
+-we also might need to store the image name for the photos, since they might be a different file format.....should we worry about this later???
+    -probably not...alright thats done..now we need to make sure that if this is not the current query then we keep scanning, but if it is then we stop
+    -so we took out the part where we download the picture
+    -we dont need this right now
+-implement DISABLED_COOKIES in scrapy
+-call the ebay spider immediatly after we find a new search on craigslist
+    -I think we will be implementing this immediatly
+    -its close enough, we look for arbitrages after each search term
+-if there is an insanely good deal, alert my phone
+    -eh, we may not want this, since some will be False
+    -maybe once our search terms improve
+-make sure that it actually works that when we see a duplicate post in a different query that we skip it if we have seen it but different query, but stop all together if it is the same query
+-we should also create some test cases
+    -well, dont seem to need this shit anymore
+-there are going to be sites that do not have the item that we are trying to look up, make sure we have a threshold for those sites
+    -Yeah I think we found a balance here. we retry 3 times with different search terms until we find something
+-integrate proper dates and times (date ranges, etc)
+-we should get rid of tempfile and come up with a file structure that we can go back and look at
+    -naw we just have a decent database that we can use
+-clean up/restructure files
+    -I am not sure what I meant by this, but I dont need it anymore
+-if we can no find anything on ebay for an item, we should still write to the database that we tried to look for it
+    -which we did
+-we can do this, store a timestamp date with all of the entries. then, everyday we will comb through the entries to see which ones have just exceeded the 7 day mark
+    -or something similar to this
+    -which is what we did
 
 RESOURCES
 __________________________________________________________________

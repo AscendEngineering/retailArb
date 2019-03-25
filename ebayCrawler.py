@@ -46,8 +46,6 @@ class ebayCrawler(scrapy.Spider):
         numResults = -1
         prices = []
 
-        print(results)
-
         #if there are no results still enter empty result in db
         if(results==None):
             print("No Results Found(" + str(iter) + "): " + keywords)
@@ -98,7 +96,7 @@ class ebayCrawler(scrapy.Spider):
                 print("Error in scrapeResults algorithm")
                 exit(1)
 
-            prices.append(arbHelpers.getNum(entry))
+            prices.append(arbHelpers.getFloatNum(entry))
 
             prices.sort()
 

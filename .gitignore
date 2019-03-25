@@ -19,3 +19,4 @@ runOutput/
 test.txt
 credentials.json
 logs/
+token.pickle
