@@ -9,22 +9,10 @@ scrapy_output="/logs/scrapy"
 program_journal="/logs/program_journal"
 
 items = [
-"mugs",
 "mug",
 "matchbox",
-"Chanel‎",
-"Dior‎",
-"Gucci‎",
-"Hugo Boss",
-"Burberry",
-"Chanel",
-"Dior Homme",
-"Dolce & Gabbana",
-"Tom Ford",
 "Fossil",
 "Hilfiger",
-"Jimmy Choo Ltd",
-"Kate Spade",
 "Lacoste",
 "Converse",
 "Nike",
@@ -32,31 +20,35 @@ items = [
 "Puma",
 "Louis Vuitton",
 "Reebok",
-"Air Jordan",
 "jersey",
 "toy",
-"toys",
 "hockey stick",
 "lacrosse stick",
-"hockey sticks",
-"lacrosse sticks",
-"iphone",
-"samsung",
+#"iphone",
+#"samsung",
 "diabetic test strips",
 "fitness tracker",
-"Apple",
+#"Apple",
 "xbox",
 "ps4",
 "ps3",
 "ps2",
 "360",
 "playstation",
-"airpods",
+#"airpods",
 "headphones",
 "hot wheels",
 "stuffed animal",
-"stuffed animals",
-"book"
+"ornament",
+"hangbag",
+"Garmin Forerunner",
+"Timex Ironman",
+"Suunto Spartan Ultra",
+"Apple Watch",
+"FitBit",
+"Polar M430",
+"curtains"
+
 ]
 
 resultsFolder = 'arb_results/'
@@ -66,3 +58,5 @@ arbItemHeaders = ["ebayKeywords","craigslistKeywords","arbPrice","ebayPrice","cr
 outfiles = "outfiles/"
 
 daysSaved=7
+
+max_price=500

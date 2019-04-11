@@ -4,24 +4,32 @@ import csv
 import datetime
 import constants
 from arbdb import readArb
+import sys
 
 def main():
     parser = argparse.ArgumentParser(description='Grabbing Arbitrages Tool')
     parser.add_argument("--date","-d",help="specify the date you want to pull from (We only save 7 days back)", default=getDate())
-    parser.add_argument("-keywords","-s", help="keywords to search", default="")
+    parser.add_argument("--keywords","-s", help="keywords to search", default="")
+    parser.add_argument("--maxprice",type=int, help="max price to pay",default=sys.maxsize)
+    parser.add_argument("--minprofit",type=int, help="min profit to make",default=0)
+    parser.add_argument("--percentProfit","-pp",type=float, help="percent profit you would like to make",default=100.0)
     args = parser.parse_args()
 
     #variables
     date = args.date
     keywords = args.keywords
+    maxPrice = args.maxprice
+    minProfit = args.minprofit
+    percentProfit = args.percentProfit
+
 
     #collectAll Arbs
     print("Collecting...")
     file = constants.resultsFolder+generateFilename()+".csv"
-    collectArbs(file,date,"")
+    collectArbs(file,date,"",maxPrice,minProfit,percentProfit)
     print("...finished")
 
-def collectArbs(file,date,keywords):
+def collectArbs(file,date,keywords,maxPrice,minProfit,percentProfit):
 
     #open up the csv, write headers
     with open(file,'w',newline='') as csvfile:
@@ -29,20 +37,23 @@ def collectArbs(file,date,keywords):
         writer.writerow(constants.arbItemHeaders)
 
         #get the results and write them
-        results = readArb(date)
+        results = readArb(date, maxPrice, minProfit)
         for result in results:
-            itemList = getItemList(result)
-            writer.writerow(itemList)
+            itemList = getItemList(result,percentProfit)
+
+            #write to csv
+            if(len(itemList)>0):
+                writer.writerow(itemList)
 
 
-
-
-
-
-def getItemList(arbItem):
+def getItemList(arbItem,percentProfit):
     retVal = []
     for item in constants.arbItemHeaders:
-        retVal.append(arbItem[item])
+
+        #percentage profit
+        if( arbItem["arbPrice"] >= arbItem["craigslistPrice"] * (percentProfit/100.0)):
+            retVal.append(arbItem[item])
+
     return retVal
 
 

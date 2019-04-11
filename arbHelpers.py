@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from arbdb import readFromCraigDB,readFromEbayDB
 import datetime
+import generateSearchTerms
 
 #entry that will be stored in db
 def createEntry(pid,title,price,query,format,link):
@@ -49,7 +50,9 @@ def getQuery(url):
 def collectUrls():
     retVal = []
 
-    for item in constants.items:
+    items = generateSearchTerms.getAllItems()
+
+    for item in items:
         print(constants.template + urllib.request.quote(item))
         retVal.append(constants.template + urllib.request.quote(item))
 

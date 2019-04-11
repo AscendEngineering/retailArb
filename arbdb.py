@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import arbHelpers
 import datetime
+import sys
 
 
 def writeToCraigDB(filename):
@@ -71,7 +72,7 @@ def writeArb(item):
         print("Error writing Arbitrage")
 
 #gives data, sorted by the best arbitrage at top, based on date
-def readArb(date):
+def readArb(date, maxPrice = sys.maxsize, minProfit = 0):
     currentcol = date
 
     #connect to DB
@@ -79,4 +80,10 @@ def readArb(date):
     collection = client['arbitragedb'][str(currentcol) + "_arbs"]
 
     #return and sort by descending
-    return collection.find().sort("arbPrice",-1)
+    retVal = collection.find({ "$and" : 
+        [
+            {"craigslistPrice": {"$lte": maxPrice}},
+            {"arbPrice" : {"$gte": minProfit }}
+        ]
+    }).sort("arbPrice",-1)
+    return retVal

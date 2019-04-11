@@ -161,6 +161,14 @@ in the dds requests...nice
 -yeah, so lets just get all of the connections, and then at the end if there are no items left we will drop the database
 -we should change the timestamp to a number, not a string
 
+-okay, so how are we going to do this. we need to test, but idk how we want to test this bad boy, since we are going
+to need to see what the ebay search is. well, we can turn on the logging and then just click the url
+-okay so now that we have that. lets run over this list....but we do want to save the output
+
+-alright now we want to generate these search terms. so the main issue that we are having is with beautiful soup.
+-BeautifulSoup for some reason is not picking up on the div that we want
+-yeah beautiful soup was absolute shit. so we are back to scrapy. 
+
 
 TODO
 __________________________________________________________________
@@ -194,14 +202,8 @@ __________________________________________________________________
     -adjectives
     -non-brand names (coffee maker)
 
-
-
 -every morning delete the collection that is more than 7 days away
     -well, not this specific, but we should find a way to automate this
-
-
-
--change database collection back from testdb to dynamic dates
 
 -implement keywords in collect.py
 
@@ -220,16 +222,22 @@ __________________________________________________________________
 
 -add a progress bar (or any type of process indication)
 
--figure out a better way to log the search keywords that you are generating urls for
-
--this dynamic search list actually looks pretty necessary right now
-
 -log the output of the spider and print statements to 2 different locations, and have those save dynamically
     -this is going to be hard since we run the crawlers so many times again and again
     -this would lead to a lot of separate files, and probably a lot of confusion about what the fuck actually ran
 
+-add a max price
 
+-might want to add a feature just to look for completed auctions only, not to just included them
+    -we would need to scrape the page to find whether auction was completed or not
 
+-factor out adjectives from search terms
+
+-factor in something that we can specify what sort of profit that we want to make
+    -for example, we want to make at least 25% profit or something
+
+-use ebay "whats it worth" instead of trying to figure out the price yourself
+    -https://explore.ebay.com/worth?keywords=Samsung%20Galaxy%20s8plus&activity=sold&siteId=EBAY-US&trend=all&catid=9355&lcf=11&level=1&interval=weekly
 
 DONE
 __________________________________________________________________
@@ -305,6 +313,15 @@ __________________________________________________________________
 -we can do this, store a timestamp date with all of the entries. then, everyday we will comb through the entries to see which ones have just exceeded the 7 day mark
     -or something similar to this
     -which is what we did
+-change database collection back from testdb to dynamic dates
+    -not sure wtf this means, but okay
+-look at completed auctions for used sales only on ebay
+-why is it that for "mason jars" search we are seeing 9 items in the search, but only save 2
+    -good question
+    -turned out that a lot of our craigslist scraper was broken...like a lot of it
+-figure out a better way to log the search keywords that you are generating urls for
+    -well I store them in the sql tables, so I think that is good enough
+
 
 RESOURCES
 __________________________________________________________________
@@ -354,7 +371,7 @@ __________________________________________________________________
     High-end sunglasses like Ferragamo, RayBan, Prada, and Oakley as they could be fake
     Autographed items (make sure it is authenticated)
 
-
+-ebay api options: https://developer.ebay.com/docs#Ana
 
 
 

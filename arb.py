@@ -12,7 +12,7 @@ class craigCrawler(scrapy.Spider):
     custom_settings={
         'COOKIES_ENABLED': False,
         'USER_AGENT': generate_user_agent(),
-        'LOG_ENABLED': False
+        'LOG_ENABLED': True
     }
 
     def __init__(self, in_starturls,in_output):
@@ -38,22 +38,33 @@ class craigCrawler(scrapy.Spider):
         query = getQuery(response.request.url)
 
         #get each post
-        for result in response.css('li.result-row a::attr(href)').extract():
+        for result in response.css('p.result-info a.result-title::attr(href)').extract():
+
+            #sanity check
             if(result != "#"):
+                pid = self.scrapPID(result)
+                print("PID: " + str(pid))
 
                 #if item is already there do not add it, if it matches the query exit out
-                if( self.collection.find({"pid":str(self.scrapPID(result))}).count() > 0 ):
-                    for page in self.collection.find({"pid":str(self.scrapPID(result))}):
+                if( self.collection.find({"pid":str(pid)}).count() > 0 ):
+                    for page in self.collection.find({"pid":str(pid)}):
+
                         if(page['query'] == query):
+                            print("Already Logged this item with this search")
                             return None
-                    break
+                        else:
+                            print("PID "+ str(pid) +" already captured in query: " + page['query'])
+
+                    continue
 
                 #get the posts from the page
                 yield scrapy.Request(result,callback=self.parsePage,meta = {'query':query})
 
         #get the next page if it exists
         next = response.css('a.next::attr(href)').get()
-        if(next is not None):
+        print(next)
+        if((next is not None) and (next is not "")):
+            print("Onto next page...")
             yield scrapy.Request(response.urljoin(next),callback=self.parse)
 
 
@@ -62,9 +73,11 @@ class craigCrawler(scrapy.Spider):
     def parsePage(self, response):
 
         #filter non-priced entries
-        price = response.css('span.price::text').extract_first().rstrip()
+        price = response.css('span.price::text').extract_first()
         if(price is None or price == "$1"): #most searhces with $1 are bullshit for attention
-            return
+            price = str(sys.maxsize)
+        else:
+            price = price.rstrip()
 
         #grab elements
         title = response.css('#titletextonly::text').extract_first()
@@ -72,7 +85,7 @@ class craigCrawler(scrapy.Spider):
         link = response.request.url
         pid = self.scrapPID(link)
         query = response.request.meta['query']
-        format = "" if image=="" else getFileFormat(image)
+        format = "" if image==None else getFileFormat(image)
 
         #store in the database
         entry = createEntry(pid,title,price,query,format,link)

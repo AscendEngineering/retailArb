@@ -29,6 +29,7 @@ def main():
         for url in urls_to_crawl:
 
             outputfile = tempfile.mkstemp()[1]
+            print("Output file: " + outputfile)
 
             #run the craigslist crawler
             yield runner.crawl(craigCrawler,[url],outputfile)
