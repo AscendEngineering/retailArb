@@ -44,43 +44,200 @@ __________________________________________________________________
 -lets go ahead and work on the downloading of the pictures.
 -ok so at this second lets work on storing the query name as well as the filename
 -ugh so are we going to straight use a module to download this photo and then store it in some place "images folder"
+-SO we can probably make sure that no 2 photos are duplicated by checking to see if a file exists with that name in the images folder. that would probably
+    be easiest
+-alright so that seemed to work well...hopefully PIDs are not repeated, or else we are kind fucked
+-okay so now we are going to need to implement the search query in the database
+-so for right now it seems like we have something that will actually download everything that we need from craigslist, which is nice
+-now we actually have to work on the ebay part of this
+
+-I need to work out a way to get these ebay results, because we want the results, and the results that match fewer words.
+-then we need to grab those....should we store all of them and then compare??
+-well yeah what we should do is pull in all the entries.....and compare each one with the one in the db that we have....or does the compare method that
+-we are going to have gouing to accept a url, because in that case we might not want to pull those photos in
+-well hopefully the method can handle the url i
+-good news is that the image comparison works...bad news is that we need to resize images to compare them ising ssim....which is going to be interesting figuring that ones
+    out.
+-what I seem to be seeing is that ssim measures the quality of the photo in relation to another photo, and I am not sure if that is what we want exactly. i think
+    it was naive of me to think that this algorithm would just give me a score and say this is how similar these two images are. I need to maybe run a few different algorihtms
+    and then get a score from that
+-okay so lets create a suite of images that we can compare with each other and from there we can get what we are working with....oh, but they need to be the same size....,
+and that is not going to work with ssim....so we need a module to resize. obviosuly we will resize to the middle.tbh both of them will have to be resized.. we will take the
+smaller height and width, then resize both images to that size
+-okay, so it looks like this heightened image comaprison method takea a bit of time
+-okay, lets implement both and see which one is better with our test suite
+-ok, looks good. I found the algorithm that I wanted. I didnt even need to implement both algorihtms
+-so the next step is scrape ebay...which is going to be a pain in the ass
+-well what I actually want to do is look up, see if there are any results, and if not run it through a text filter and then try again
+
+-we should probably be able to load bullshit data onto the database...eh...whatveer
+-now I am wondering whether we are actually/.....well we are definitely searching the mongo db.
+-so we have 2 options....we can make these api requests that are designed by ebay...or we can use our own scrapy crawler to fill out these
+forms and make the calls themselves......if we make the calls ourselves it is guaranteed to be free, we can see relevant items, and we can make sure to get the item image
+-however, we might get a cease and assist, and it might not be as fast.....it might also not be as complex.
+-I am leaning towards just using scrapy...plus in my heart I somehow realize taht I am going to habe to pay for something wiht ebay api....theres a reason that
+    they are offering it..mmm i see. they are using it so that users can
+
+-so now we have to make a whole new scraper for ebay is what I am hearing.....which won't be crazy hard...we just need to fill out the form
+
+-ebay
+    -go to the main page, grab the form, fill it out, and submit....I am not sure how
+    -so we will use the from_response...but I am unsure how it will exactly know which form to fill out
+
+-okay so we are sitting pretty. we need to figure out how to take each item and either store it or run it through comparison...
+-either that...or we could do a poor mans way of doing this and just take the prices...average them out and then from there we can figure out what we really need to do
+    -shit thats actually not a bad idea..we can just run statistics on the prices...find out what the price is...factor out any outliers
+    -but there are two parts to this. because some results will end up yielding nothing on ebay. so we do need to implement a search term modifier. probably present in
+    the ebay crawler itself. so we need to implement something that will get rid of common words like "the"...idk about getting rid of numbers. dates might be
+    something that we want to keep....hmmm. lets worry about the text modifier later and worry about collecting those statistics now.
+    -we do not want to hold onto these statistics. all we need to do is collect and report. this also means that we can stop downloading the images from craigslist..but
+    if I have to be honest with you I might want those for the reports....hmmm...we also need to move some other scripts over to our other servers, but that
+    is besides the point.
+    -what we really need to do is map out how we are going to report whether there is a match or no. what we can do is pass in the price of the item
+    into the ebay crawler. then we run statistics and find out if it is higher or lower.....well....we can pass in the pid from craigslist...look it up in mongodb
+    get the price from there. this will make things a lot easier when we want to output whether something is more expensive or not. because then we have all
+    of the item info in the ebayCrawler itself. then...if we want to add items later we can just pass in the pid from the perspective website to get it's info.
+    this seems to make the most sense right now...so we will pass in the pid and go from there
+-so we just need to get the numbers until the related search section. ah yeah this is where we left off last time. how do we know when to stop basically
+-so what I could basically do is grab the list, go through all the items, and if the id is a message then we stop. oh wait...I already figure this one out
+    -fuck yeah im smart
+-alright so now we need to store in the db
+-so now what. we have the predicted price in the db....we have the pid of the item. I guess we just go through now and see if there is an arbitrage opportunity between
+the two. and if there is then we can save that pid and create a spreadsheet of purchasing oppportunities. but we will essentially use the same temp file
+-alright, so we are going to need to figure out how to keep this thing running
+-well the next part is finding an arbitrage right? so after we look up those values on ebay we either
+need to look for that arbitrage immediatly, or we need to store that arbitrage and report it next time we
+go through the list......well
+
+-so we do need to figure out how to run the ebay crawler within the craigslist crawler since the Reactor has
+already started
+-so how are we going to get this done? we are going to need to either pass the process along or start that Runner thng that I saw....but we are going to have to attach to
+some process. so if we really want to optomize this...I think that is teh only option
+-huh, so now we are getting an error that the twisted connection is being disrupted in an unclean fashion. I wonder
+if this is happening because ebay is detecting that we are trying to scrape it. we can revert everything and try again to see if hitting ebay over and over again
+which sounds like a good idea to me,
+-well luckily it was not ebay. it is that fucking twisted library. but luckily online we found a way to make sure that we can call crawlers sequentially
+-to get this thing running lets just go ahead and have the craigslist run, then the ebay.
+-okay we need to flesh out some dates where this shit will get done
+
+-I remember what happened. the ebay crawler did not run for some reason. it was because there was not any pids in the list to process. So we will probably have to go back to the tempfile
+-okay so I am not seeing things being added to the database. I think it is because we are not finding anything in ebay. so we probably will have to implement the text  modifier so that
+    we are not looking up any bullshit words (which are known as stop words)
+    -but, before we add these, lets make sure that we are actually looking up these values
+-well right now we are not getting any values from the mongodb, so we need to figure that one out
+-yeah, so for some reason it is not returning....
+-okay, so now that we seem to have that resolved....we can should probably go ahead and integrate this natural language processor
+    -done, we just need to see if we have nothing returned, and if we have not, then search again.....
+        -remove symbols and stopwords
+        -remove symbols, stopwords, numerics
+-so our problem now is that we might end up in a recursive loop because of how we are handling this. because we are not keeping track of how many times we request
+    the object.
+-okay so now that we are getting the median of the prices. next we need to match up what is on craigslist with what is on ebay when we see that there is a difference
+-so after we run the ebay crawler I wonder if we should be then running a separate method that will pull from all the databases the pid and the prices then we need to rank them
+    -so......we need to figure out how we are going to store/order this... I imagine what I am
+ok, so now we have this sorted list. we can ne
+-so we are going to start the arbitrafe original and just pass in the urls one by one..I think that wont be too hard to change
+
+-we also need to figure out how we are going to log and organize all of this stuff.
+-right, so what we were doing here was trying to store all of the results very nicely. and we wanted to put them in collections that showed the date,
+and currently I can not seem to access the database
+-So, lets try to work with the database with just the numbers again, and see if that works
+
+-cool, so now we are storing things in a database. well, all of the arbs in a database.....now I guess what is left to do
+is to actually generate a report. What I would like to do is have this separate from the actually crawler program. this
+way when I want to just view arbitrage items, I do not have to stop the spider....
+Cool, so this program shouldn't be that hard to make. but we do need to figure out how we want to present it
+-okay so this is the part where we need to make a program that will output all of the data that we want.
+-the thing that we need to work on is how we are going to form this request. I guess we just need to specify  a
+date and maybe we want to be able to specify uniquely the fields that we want to search. so, a date and field....just like
+in the dds requests...nice
+
+-so for this program we really will be diivng into how to extarct info from the db, especially data that needs to be sorted.
+-so how are we going to factor in this filename? are we just going to create a new file, everytime....no...lets just not do that
+-instead lets just write to 2 files
+-fuck that, we are just making a temp file
+-we also really need to figure out how to clean up this stuff
+-yeah, we need to clean this stuff up
+-yeah, so lets just get all of the connections, and then at the end if there are no items left we will drop the database
+-we should change the timestamp to a number, not a string
+
+-okay, so how are we going to do this. we need to test, but idk how we want to test this bad boy, since we are going
+to need to see what the ebay search is. well, we can turn on the logging and then just click the url
+-okay so now that we have that. lets run over this list....but we do want to save the output
+
+-alright now we want to generate these search terms. so the main issue that we are having is with beautiful soup.
+-BeautifulSoup for some reason is not picking up on the div that we want
+-yeah beautiful soup was absolute shit. so we are back to scrapy. 
 
 
 TODO
 __________________________________________________________________
 -scrape
-	-ebay
-	-craigslist
 	-facebook marketplace
--someone has done this before, so lets see if we can imitate
-	-look up the amazon seller app
-	-fullfillment by amazon revenue calculator
+
 -sign up for amazon seller account
+
 -learn more about how retail arbitrage works
 	-its pretty simple, but there are some rules that we should follow. but i think the main thing is just diving in
+
 -target the program to look at garage and moving sales too, these people are motivated to leave
+
 -target posts that say they need quick cash
--update collectUrls method
--create a nosql database
--create a script to handle mongodb restart
-    -sudo service mongod status/restart/start/stop
--connect the scraper to our db so that we can immediatly see if we have seen an item before
--alternative to directly above, see if we can scan for items that were posted since the last time that we scaned
-    -we can select posts that were made in the last day, lets make cmd line argument that we can either do full scan or just the past day, then we can run this once per Day
-    -the only problem with this is that we will not get automatic updates. if we want autoatic updates we need to log the entries into mongodb on the fly
--create some type of process where we go through and delete old posts that are not longer there
--what if an item shows up in 2 different searches, but we stop at that item since the way we have it set up is that we stop scanning when we have already seen an item
-    that is in our database. we need to store the search query that we used as well so we can know whether we should stop or not. so we would look up an item's pid
-    and the search query used. if the pid matches but the search query does not then we keep scanning, if both match then we stop scanning
+
 -also, we should make sure that an item's PID is unique, because the url that is being shown includes the PID and the name of the item, so that is suspicious
--make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
--add it shipping costs
+
 -figure out a way that we can also search using certain things from the descriptions
--we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
--we need to push this stuff to github
--make sure that we are not downloading the same photo twice
 
+-we should probably add some error checking in here
 
+-filter out "wanted" posts
+
+-create our own id system so that if there is a site that has the same pid as craigslist the two entries do not overlap
+
+-fix error where we are splicing on an image file that does not exist
+    -we want to make sure that we are not erroring out on this and stopping the arbitrage
+
+-we need to figure out a way to filter out generic words
+    -"moving out"
+    -adjectives
+    -non-brand names (coffee maker)
+
+-every morning delete the collection that is more than 7 days away
+    -well, not this specific, but we should find a way to automate this
+
+-implement keywords in collect.py
+
+-implement a better way to log our output, and switching it on and off
+
+-the biggest way that we can improve this right now is to improve the search between sites.
+    -we need the price between sites to be more accurate
+
+-add in shipping costs
+
+-add in support to search for a whole category, like "video games"
+
+-add script to create list of items that are trending
+
+-have script automatically upload excel spreadsheet to google drive right before lunchtime
+
+-add a progress bar (or any type of process indication)
+
+-log the output of the spider and print statements to 2 different locations, and have those save dynamically
+    -this is going to be hard since we run the crawlers so many times again and again
+    -this would lead to a lot of separate files, and probably a lot of confusion about what the fuck actually ran
+
+-add a max price
+
+-might want to add a feature just to look for completed auctions only, not to just included them
+    -we would need to scrape the page to find whether auction was completed or not
+
+-factor out adjectives from search terms
+
+-factor in something that we can specify what sort of profit that we want to make
+    -for example, we want to make at least 25% profit or something
+
+-use ebay "whats it worth" instead of trying to figure out the price yourself
+    -https://explore.ebay.com/worth?keywords=Samsung%20Galaxy%20s8plus&activity=sold&siteId=EBAY-US&trend=all&catid=9355&lcf=11&level=1&interval=weekly
 
 DONE
 __________________________________________________________________
@@ -92,11 +249,90 @@ __________________________________________________________________
 	-make sure duckdns gets updates
 	-we dont have to worry about this as long as one of the PC's updates it, and I am pretty sure server2 does this
 -make sure we are not storing duplicate posts
+-we need to push this stuff to github
+-make sure that we are not downloading the same photo twice
+-scrape
+	-ebay
+	-craigslist
+-update collectUrls method
+-create a script to handle mongodb restart
+    -sudo service mongod status/restart/start/stop
+    -I decided not to do this, at least for right now. when we move it to our box then we will want to set up mongo in the beginning
+-create a nosql database
+-connect the scraper to our db so that we can immediatly see if we have seen an item before
+-alternative to directly above, see if we can scan for items that were posted since the last time that we scaned
+    -we can select posts that were made in the last day, lets make cmd line argument that we can either do full scan or just the past day, then we can run this once per Day
+    -the only problem with this is that we will not get automatic updates. if we want autoatic updates we need to log the entries into mongodb on the fly
+    -we ended up handling this by scanning until we have seen an item that we have seen before, and then we make sure that it is the same search that we have seen it in before
+-what if an item shows up in 2 different searches, but we stop at that item since the way we have it set up is that we stop scanning when we have already seen an item
+    that is in our database. we need to store the search query that we used as well so we can know whether we should stop or not. so we would look up an item's pid
+    and the search query used. if the pid matches but the search query does not then we keep scanning, if both match then we stop scanning
+    -we ended up handling this
+-we are going to need to make sure that ebay doesn't pick up on us trying to scrape its website...so we should get a few different api keys
+    -we are not using these anymore, so it doesnt matter
+-if the first ebay search does not return anything
+    -strip away all the unecessary search words when we are combing through ebay. numbers, filler words, anything that is not a brand name or product description, then use
+    that to search.
+    -then we should scan through the pictures, and if there is one that gives us a match above a certain point then we have a match
+        -we did not do the pictures thing, but we do refine search keys in order to find something
+-find a way to make 2 images have the same dimensions
+-figure out a better way to stop this process when we start it (because right now thehy just keep going)
+    -eh, we do not have this problem ever since we changed to CrawlRunner
+-we should probably also store the search keywords that lead us to the search that landed us on ebay
+-store arbitrages in a database
+-make it so that when something new gets posted we automatically look up if there is an arbitrage opportunity
+    -meh, we are half doing this now. we look up an item after we have been through all of its category on craigslist
+-figure out why we are not propogating up more errors
+    -well we are, but we turned logging off so it really doesnt matter since we cant see the fucking logs you idiot
+-on ebay, make sure that we are only looking for used items
+-throw out ebay searches that have $1 for the price
+-create some type of process where we go through and delete old posts that are not longer there
+-we also might need to store the image name for the photos, since they might be a different file format.....should we worry about this later???
+    -probably not...alright thats done..now we need to make sure that if this is not the current query then we keep scanning, but if it is then we stop
+    -so we took out the part where we download the picture
+    -we dont need this right now
+-implement DISABLED_COOKIES in scrapy
+-call the ebay spider immediatly after we find a new search on craigslist
+    -I think we will be implementing this immediatly
+    -its close enough, we look for arbitrages after each search term
+-if there is an insanely good deal, alert my phone
+    -eh, we may not want this, since some will be False
+    -maybe once our search terms improve
+-make sure that it actually works that when we see a duplicate post in a different query that we skip it if we have seen it but different query, but stop all together if it is the same query
+-we should also create some test cases
+    -well, dont seem to need this shit anymore
+-there are going to be sites that do not have the item that we are trying to look up, make sure we have a threshold for those sites
+    -Yeah I think we found a balance here. we retry 3 times with different search terms until we find something
+-integrate proper dates and times (date ranges, etc)
+-we should get rid of tempfile and come up with a file structure that we can go back and look at
+    -naw we just have a decent database that we can use
+-clean up/restructure files
+    -I am not sure what I meant by this, but I dont need it anymore
+-if we can no find anything on ebay for an item, we should still write to the database that we tried to look for it
+    -which we did
+-we can do this, store a timestamp date with all of the entries. then, everyday we will comb through the entries to see which ones have just exceeded the 7 day mark
+    -or something similar to this
+    -which is what we did
+-change database collection back from testdb to dynamic dates
+    -not sure wtf this means, but okay
+-look at completed auctions for used sales only on ebay
+-why is it that for "mason jars" search we are seeing 9 items in the search, but only save 2
+    -good question
+    -turned out that a lot of our craigslist scraper was broken...like a lot of it
+-figure out a better way to log the search keywords that you are generating urls for
+    -well I store them in the sql tables, so I think that is good enough
+
 
 RESOURCES
 __________________________________________________________________
 -image comparison good post
     https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+-good video series on image comparisons
+    -https://www.youtube.com/watch?v=ND5vGDNvN0s&list=PL6Yc5OUgcoTlQuAdhtnByty15Ea9-cQly
+    -using ssim
+        -faster, not as accurate, need the image to be the same size
+    -using feature similarities
+        -slower, more accurate, images do not need to be the same size
 -mongodb commands
     -mongo: interactive shell
     -sudo service mongod status/restart/start/stop: controls the mongo service
@@ -135,27 +371,8 @@ __________________________________________________________________
     High-end sunglasses like Ferragamo, RayBan, Prada, and Oakley as they could be fake
     Autographed items (make sure it is authenticated)
 
+-ebay api options: https://developer.ebay.com/docs#Ana
 
 
 
-
-{ "_id" : ObjectId("5c5bc127e72298d8e316980c"), "title" : "2 NEW TRAVEL mugs,1 NEWcheese knife& 1 pack napkin IN A PICNIC BASKET", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/hsh/d/2-new-travel-mugs1-newcheese-knife-1/6791236154.html", "pid" : "679123615" }
-{ "_id" : ObjectId("5c5bc127e72298d8e316980e"), "title" : "2- Target Christmas Travel Mugs", "price" : 6, "link" : "https://chicago.craigslist.org/wcl/hsh/d/2-target-christmas-travel-mugs/6795698620.html", "pid" : "679569862" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169810"), "title" : "Nespresso Pure Collection Mugs & Saucers", "price" : 20, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-nespresso-pure-collection-mugs/6809950435.html", "pid" : "680995043" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169812"), "title" : "Set of 4 Ralph Lauren Polo 12 oz THOROUGHBRED CERAMIC MUGS - 1980's", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796345099.html", "pid" : "679634509" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169814"), "title" : "Set of 4 Ralph Lauren Polo 12 oz Signature Mugs - SPORT SERIES MUGS", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/for/d/naperville-set-of-4-ralph-lauren-polo/6796341020.html", "pid" : "679634102" }
-{ "_id" : ObjectId("5c5bc128e72298d8e3169816"), "title" : "Beer mugs Bulls and Old Style...both for $18", "price" : 18, "link" : "https://chicago.craigslist.org/nwc/spo/d/park-ridge-beer-mugs-bulls-and-old/6804570038.html", "pid" : "680457003" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169818"), "title" : "Fiesta Dishes Bowls Mugs", "price" : 250, "link" : "https://chicago.craigslist.org/nwc/hsh/d/wheeling-fiesta-dishes-bowls-mugs/6812430827.html", "pid" : "681243082" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981a"), "title" : "New Starbucks logo mugs & art mugs", "price" : 5, "link" : "https://chicago.craigslist.org/wcl/hsh/d/oak-park-new-starbucks-logo-mugs-art/6809722700.html", "pid" : "680972270" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981c"), "title" : "Fuddruckers Mugs", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/elgin-fuddruckers-mugs/6810359591.html", "pid" : "681035959" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316981e"), "title" : "Coffee Mugs, Sugar & Creamer", "price" : 25, "link" : "https://chicago.craigslist.org/wcl/hsh/d/clarendon-hills-coffee-mugs-sugar/6796413336.html", "pid" : "679641333" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169820"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/clt/d/chicago-royal-albert-bone-china-mugs/6802786510.html", "pid" : "680278651" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169822"), "title" : "ROYAL ALBERT BONE CHINA MUGS -- SET OF 6 MATCHING", "price" : 49, "link" : "https://chicago.craigslist.org/chc/hsh/d/royal-albert-bone-china-mugs-set-of-6/6799911541.html", "pid" : "679991154" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169824"), "title" : "Tiki Mug Drink Mix Set - Tikis / Sugar / Drink Umbrellas / Tiki  Plate", "price" : 25, "link" : "https://chicago.craigslist.org/nwc/hsh/d/chicago-tiki-mug-drink-mix-set-tikis/6810152414.html", "pid" : "681015241" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169826"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813225627.html", "pid" : "681322562" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169828"), "title" : "8 Vintage Pyrex Federal Eagle Mugs", "price" : 30, "link" : "https://chicago.craigslist.org/nwc/clt/d/8-vintage-pyrex-federal-eagle-mugs/6807492954.html", "pid" : "680749295" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982a"), "title" : "Pfaltzgraff Flower Market Dishes", "price" : 175, "link" : "https://chicago.craigslist.org/nwc/hsh/d/elgin-pfaltzgraff-flower-market-dishes/6796190702.html", "pid" : "679619070" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982c"), "title" : "Moving Sale: household Everything Elvis Presley Memorbilia-26 Pieces", "price" : 100, "link" : "https://chicago.craigslist.org/nwc/clt/d/wheeling-moving-sale-household/6811415664.html", "pid" : "681141566" }
-{ "_id" : ObjectId("5c5bc129e72298d8e316982e"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813260909.html", "pid" : "681326090" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169830"), "title" : "Handmade Ceramics -Dishes-  Brande new houseware", "price" : 4, "link" : "https://chicago.craigslist.org/chc/hsh/d/chicago-handmade-ceramics-dishes-brande/6813456714.html", "pid" : "681345671" }
-{ "_id" : ObjectId("5c5bc129e72298d8e3169832"), "title" : "Campbells Soup Mugs (2)", "price" : 20, "link" : "https://chicago.craigslist.org/nwc/clt/d/roselle-campbells-soup-mugs-2/6807510566.html", "pid" : "680751056" }
+{ "_id" : ObjectId("5c6a0aca4dc5050d7efa9ebd"), "pid" : "6817367571", "title" : "Bears Superbowl XX Stein Mug", "price" : 15, "query" : "mug", "format" : "jpg", "link" : "https://chicago.craigslist.org/wcl/clt/d/bears-superbowl-xx-stein-mug/6817367571.html" }

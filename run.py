@@ -1,78 +1,63 @@
+#!/usr/bin/env python
+
 from arb import craigCrawler
-from scrapy.crawler import CrawlerProcess
-import scrapy
-import tempfile
+from scrapy.crawler import CrawlerRunner
+from scrapy.utils.log import configure_logging
+from twisted.internet import reactor, defer
 from pymongo import MongoClient
-import re
 import urllib.request
 import constants
+from arbdb import writeToCraigDB,readFromCraigDB,writeArb
+from arbHelpers import *
+import time
+from ebayCrawler import ebayCrawler
+import os
+import tempfile
 
 def main():
 
-    #create tempfile to store output
-    file = tempfile.mkstemp()
-    filename = file[1]
-
     #run crawler
     urls_to_crawl = collectUrls()
-    runCraigCrawler(urls_to_crawl,"output.txt")
 
-    #run google crawler to look at each item that we pulled
-    ebayLookup("output.txt",)
+    #configure the Crawler
+    configure_logging()
+    runner = CrawlerRunner()
 
+    @defer.inlineCallbacks
+    def crawl():
 
+        for url in urls_to_crawl:
 
-def ebayLookup(inputfile):
+            outputfile = tempfile.mkstemp()[1]
+            print("Output file: " + outputfile)
 
-    #for every entry in the file
-    print("")
+            #run the craigslist crawler
+            yield runner.crawl(craigCrawler,[url],outputfile)
 
-
-
-def runCraigCrawler(urls_to_crawl,outputfile):
-    print("Running Crawler")
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-    })
-
-
-    process.crawl(craigCrawler,urls_to_crawl,outputfile) #change this file to "outputfile"
-    process.start()
-
-    print("Crawler finished")
-
-
-
-
-def collectUrls():
-    retVal = []
-
-    for item in constants.items:
-        print(constants.template + urllib.request.quote(item))
-        retVal.append(constants.template + urllib.request.quote(item))
-
-    return retVal
-
-
-
-def writeToDB(filename):
-    print("Writing to DB...")
-    #open the database
-    client = MongoClient()
-    collection = client['arbitragedb'].craigslist
-
-    #open the file
-    with open(filename,'r') as file:
-        for line in file:
-            entry = createEntry(line)
-            if(entry == None):
-                continue
+            #go through pids and crawl them in ebay
+            if os.path.exists(outputfile):
+                pidList = open(outputfile,'r')
             else:
-                key = {'pid': entry['pid']}
-                collection.update(key,entry,upsert=True)
+                continue
 
+            #go through every found pid in the list
+            for pid in pidList:
+                pid = pid.rstrip()
+                yield runner.crawl(ebayCrawler,pid)
 
-    print("Finished DB")
+                #detect an arbitrage
+                arbItem = detectArbitrage(pid)
+                if(arbItem != None):
+                    print("Arbitrage Found: " + pid)
+                    writeArb(arbItem)
+
+            os.remove(outputfile)
+        reactor.stop()
+
+    #set up the crawlers and run
+    crawl()
+    reactor.run()
+
 
 if __name__ == '__main__':
     main()
