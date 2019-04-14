@@ -1,5 +1,5 @@
 
-distance = 15
+distance = 5
 
 template = "https://chicago.craigslist.org/search/sss?sort=date&search_distance="+str(distance)+"&postal=60657&query="
 

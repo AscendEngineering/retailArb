@@ -1,3 +1,6 @@
+import logging
+LOG = logging.getLogger("__main__")
+
 import scrapy
 import sys
 from urllib.parse import urljoin
@@ -27,7 +30,7 @@ class ebayCrawler(scrapy.Spider):
         #get the item title from craigslist db
         searchItem = readFromCraigDB(self.searchPid)
         if(searchItem == None):
-            print("Error in reading from CraigslistDb: " + self.searchPid)
+            LOG.error("Error in reading from CraigslistDb: " + self.searchPid)
             return
 
         #search ebay
@@ -39,7 +42,7 @@ class ebayCrawler(scrapy.Spider):
         )
 
     def scrapeResults(self, response):
-        print("Ebay Searching URL: " + response.request.url)
+        LOG.info("Ebay Searching URL: " + response.request.url)
         #have to get num results to filter out related searches
         results = response.css('#cbelm > div.clt > h1 > span.rcnt::text').extract_first()
         keywords = arbHelpers.getEbaySearchKeywords(response.request.url,'_nkw')
@@ -48,7 +51,7 @@ class ebayCrawler(scrapy.Spider):
 
         #if there are no results still enter empty result in db
         if(results==None):
-            print("No Results Found(" + str(iter) + "): " + keywords)
+            LOG.info("No Results Found(" + str(iter) + "): " + keywords)
             writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
             return
         else:
@@ -69,11 +72,11 @@ class ebayCrawler(scrapy.Spider):
 
             #if we are on the last iteration exit out
             if(iter == 2):
-                print("No Results Found(" + str(iter) + "): " + keywords)
+                LOG.info("No Results Found(" + str(iter) + "): " + keywords)
                 writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
                 return
 
-            print("Refining Search (" + str(iter) + "): " + keywords)
+            LOG.info("Refining Search (" + str(iter) + "): " + keywords)
             return scrapy.FormRequest.from_response(
                 response,
                 formdata={'_nkw': newQuery},
@@ -93,7 +96,7 @@ class ebayCrawler(scrapy.Spider):
             cntr+=1
 
             if(entry == None):
-                print("Error in scrapeResults algorithm")
+                LOG.error("Error in scrapeResults algorithm")
                 exit(1)
 
             prices.append(arbHelpers.getFloatNum(entry))
@@ -104,5 +107,5 @@ class ebayCrawler(scrapy.Spider):
         medianPrice = median(prices)
 
         #store the estimated price in the databbase
-        print("Ebay Item Found: " + self.searchPid)
+        LOG.info("Ebay Item Found: " + self.searchPid)
         writeToEbayDB(self.searchPid,medianPrice,keywords,response.request.url)

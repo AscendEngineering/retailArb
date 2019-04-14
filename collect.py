@@ -12,7 +12,7 @@ def main():
     parser.add_argument("--keywords","-s", help="keywords to search", default="")
     parser.add_argument("--maxprice",type=int, help="max price to pay",default=sys.maxsize)
     parser.add_argument("--minprofit",type=int, help="min profit to make",default=0)
-    parser.add_argument("--percentProfit","-pp",type=float, help="percent profit you would like to make",default=100.0)
+    parser.add_argument("--percentProfit","-pp",type=float, help="percent profit you would like to make",default=0.0)
     args = parser.parse_args()
 
     #variables
@@ -46,12 +46,12 @@ def collectArbs(file,date,keywords,maxPrice,minProfit,percentProfit):
                 writer.writerow(itemList)
 
 
-def getItemList(arbItem,percentProfit):
+def getItemList(arbItem,percentProfit = 0.0):
     retVal = []
     for item in constants.arbItemHeaders:
 
         #percentage profit
-        if( arbItem["arbPrice"] >= arbItem["craigslistPrice"] * (percentProfit/100.0)):
+        if( arbItem["arbPrice"] >= float(arbItem["craigslistPrice"]) * (percentProfit/100.0)):
             retVal.append(arbItem[item])
 
     return retVal

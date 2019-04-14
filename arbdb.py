@@ -1,3 +1,6 @@
+import logging
+LOG = logging.getLogger("__main__")
+
 from pymongo import MongoClient
 import arbHelpers
 import datetime
@@ -21,7 +24,7 @@ def writeToCraigDB(filename):
 
                 #sanity check
                 if(status.acknowledged == False):
-                    print("Error writing Craigslist")
+                    LOG.error("Error writing Craigslist")
 
 def readFromCraigDB(pid):
     client = MongoClient()
@@ -41,7 +44,7 @@ def writeToEbayDB(pid,estimatedPrice,keywords,url):
 
     #sanity check
     if(pid == None or estimatedPrice==0):
-        print("Error in writeToEbay")
+        LOG.error("Error in writeToEbay")
         return
 
     #connect to DB
@@ -55,7 +58,7 @@ def writeToEbayDB(pid,estimatedPrice,keywords,url):
 
     #sanity check
     if(status.acknowledged == False):
-        print("Error writing Ebay")
+        LOG.error("Error writing Ebay")
 
 
 def writeArb(item):
@@ -69,7 +72,7 @@ def writeArb(item):
 
     #sanity check
     if(status.acknowledged == False):
-        print("Error writing Arbitrage")
+        LOG.error("Error writing Arbitrage")
 
 #gives data, sorted by the best arbitrage at top, based on date
 def readArb(date, maxPrice = sys.maxsize, minProfit = 0):
@@ -80,10 +83,11 @@ def readArb(date, maxPrice = sys.maxsize, minProfit = 0):
     collection = client['arbitragedb'][str(currentcol) + "_arbs"]
 
     #return and sort by descending
-    retVal = collection.find({ "$and" : 
+    retVal = collection.find({ "$and" :
         [
             {"craigslistPrice": {"$lte": maxPrice}},
             {"arbPrice" : {"$gte": minProfit }}
         ]
     }).sort("arbPrice",-1)
+
     return retVal
