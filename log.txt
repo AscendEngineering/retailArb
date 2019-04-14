@@ -206,7 +206,7 @@ __________________________________________________________________
 
 -figure out a way that we can also search using certain things from the descriptions
 
--we should probably add some error checking in here
+
 
 -filter out "wanted" posts
 
@@ -225,15 +225,12 @@ __________________________________________________________________
 
 -implement keywords in collect.py
 
-
 -the biggest way that we can improve this right now is to improve the search between sites.
     -we need the price between sites to be more accurate
 
 -add in support to search for a whole category, like "video games"
 
 -have script automatically upload excel spreadsheet to google drive right before lunchtime
-
--add a progress bar (or any type of process indication)
 
 -log the output of the spider and print statements to 2 different locations, and have those save dynamically
     -this is going to be hard since we run the crawlers so many times again and again
@@ -266,6 +263,8 @@ __________________________________________________________________
 -change back generateSearchTerms so that it includes all searches instead of just "curtains"
 
 -add in a check for cleandb that if the database is empty, we just delete it
+
+-split up arbHelpers into more module files
 
 DONE
 __________________________________________________________________
@@ -363,8 +362,9 @@ __________________________________________________________________
 -add a max price
     -we did this for the collectArbs script
 -implement a better way to log our output, and switching it on and off
-
-
+-we should probably add some error checking in here
+    -I think we did an decent job at this
+-add a progress bar (or any type of process indication)
 
 
 

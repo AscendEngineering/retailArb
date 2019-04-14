@@ -9,6 +9,7 @@ from urllib.parse import urlparse,parse_qs
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
+import nltk
 from arbdb import readFromCraigDB,readFromEbayDB
 import datetime
 import generateSearchTerms
@@ -93,6 +94,19 @@ def removeSymbols(keywords):
     wordList = tokenizer.tokenize(keywords)
 
     return ' '.join(wordList)
+
+def removeAdj(keywords):
+    words = word_tokenize(keywords)
+    tagged = nltk.pos_tag(words)
+    retVal = []
+
+    for tag in tagged:
+        if(tag[1]=='JJ' or tag[1]=='ADJ'):
+            continue
+        else:
+            retVal.append(tag[0])
+
+    return ' '.join(retVal)
 
 def getEbaySearchKeywords(url,keyword):
     parsed = urlparse(url)
