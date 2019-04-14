@@ -261,7 +261,8 @@ __________________________________________________________________
     -somewhat automate the contact method (or generate an email that we could send and we would just need to enter in the address)
     -clickable links
 
-
+-install script
+    -create logs/run_logs
 
 DONE
 __________________________________________________________________

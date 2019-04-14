@@ -33,7 +33,6 @@ def main():
     #run crawler
     urls_to_crawl = collectUrls()
 
-    exit(0)
     #configure the Crawler
     configure_logging()
     runner = CrawlerRunner()
