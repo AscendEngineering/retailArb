@@ -225,12 +225,9 @@ __________________________________________________________________
 
 -implement keywords in collect.py
 
--implement a better way to log our output, and switching it on and off
 
 -the biggest way that we can improve this right now is to improve the search between sites.
     -we need the price between sites to be more accurate
-
-
 
 -add in support to search for a whole category, like "video games"
 
@@ -241,8 +238,6 @@ __________________________________________________________________
 -log the output of the spider and print statements to 2 different locations, and have those save dynamically
     -this is going to be hard since we run the crawlers so many times again and again
     -this would lead to a lot of separate files, and probably a lot of confusion about what the fuck actually ran
-
--add a max price
 
 -might want to add a feature just to look for completed auctions only, not to just included them
     -we would need to scrape the page to find whether auction was completed or not
@@ -365,6 +360,13 @@ __________________________________________________________________
 -add script to create list of items that are trending
 -add in shipping costs
     -idk if we need to do this. we will just have the customer pay for it
+-add a max price
+    -we did this for the collectArbs script
+-implement a better way to log our output, and switching it on and off
+
+
+
+
 
 RESOURCES
 __________________________________________________________________

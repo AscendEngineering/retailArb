@@ -16,7 +16,7 @@ class craigCrawler(scrapy.Spider):
     custom_settings={
         'COOKIES_ENABLED': False,
         'USER_AGENT': generate_user_agent(),
-        'LOG_ENABLED': True
+        'LOG_ENABLED': False
     }
 
     def __init__(self, in_starturls,in_output):
