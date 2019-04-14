@@ -186,6 +186,8 @@ add on all of the craigslist category urls that we want as well...where are we g
     the first time. then everytime
 
 
+-so now we need to work on what is going on with this errorin reading arb issue
+
 TODO
 __________________________________________________________________
 -scrape
@@ -228,11 +230,9 @@ __________________________________________________________________
 -the biggest way that we can improve this right now is to improve the search between sites.
     -we need the price between sites to be more accurate
 
--add in shipping costs
+
 
 -add in support to search for a whole category, like "video games"
-
--add script to create list of items that are trending
 
 -have script automatically upload excel spreadsheet to google drive right before lunchtime
 
@@ -260,8 +260,17 @@ __________________________________________________________________
     -view these images side by side
     -somewhat automate the contact method (or generate an email that we could send and we would just need to enter in the address)
     -clickable links
+    -add in stopwords for nltk stopwords
 
+-install script
+    -create logs/run_logs
+    -install mongodb if not already there
 
+-check if mongodb is running before we try to start arbitraging
+
+-change back generateSearchTerms so that it includes all searches instead of just "curtains"
+
+-add in a check for cleandb that if the database is empty, we just delete it
 
 DONE
 __________________________________________________________________
@@ -353,6 +362,9 @@ __________________________________________________________________
 -use ebay "whats it worth" instead of trying to figure out the price yourself
     -https://explore.ebay.com/worth?keywords=Samsung%20Galaxy%20s8plus&activity=sold&siteId=EBAY-US&trend=all&catid=9355&lcf=11&level=1&interval=weekly
     -eh, this is actually pretty similar to their normal search. Lets keep what we have
+-add script to create list of items that are trending
+-add in shipping costs
+    -idk if we need to do this. we will just have the customer pay for it
 
 RESOURCES
 __________________________________________________________________
