@@ -1,9 +1,13 @@
+import logging
+LOG = logging.getLogger("__main__")
+
 import scrapy
 import sys
 from urllib.parse import urljoin
 from pymongo import MongoClient
 from arbHelpers import *
 from user_agent import generate_user_agent
+
 
 
 class craigCrawler(scrapy.Spider):
@@ -25,7 +29,7 @@ class craigCrawler(scrapy.Spider):
 
         #reroute output
         if(in_output == ""):
-            print("Invalid output file")
+            LOG.error("Invalid output file")
             exit(1)
         else:
             self.outputTo = in_output
@@ -33,7 +37,7 @@ class craigCrawler(scrapy.Spider):
 
     #parse the url
     def parse(self, response):
-        print("Cragslist Searching URL: " + response.request.url)
+        LOG.info("Cragslist Searching URL: " + response.request.url)
         url_list = []
         query = getQuery(response.request.url)
 
@@ -43,17 +47,17 @@ class craigCrawler(scrapy.Spider):
             #sanity check
             if(result != "#"):
                 pid = self.scrapPID(result)
-                print("PID: " + str(pid))
+                LOG.info("PID: " + str(pid))
 
                 #if item is already there do not add it, if it matches the query exit out
                 if( self.collection.find({"pid":str(pid)}).count() > 0 ):
                     for page in self.collection.find({"pid":str(pid)}):
 
                         if(page['query'] == query):
-                            print("Already Logged this item with this search")
+                            LOG.info("Already Logged this item with this search")
                             return None
                         else:
-                            print("PID "+ str(pid) +" already captured in query: " + page['query'])
+                            LOG.info("PID "+ str(pid) +" already captured in query: " + page['query'])
 
                     continue
 
@@ -62,9 +66,7 @@ class craigCrawler(scrapy.Spider):
 
         #get the next page if it exists
         next = response.css('a.next::attr(href)').get()
-        print(next)
         if((next is not None) and (next is not "")):
-            print("Onto next page...")
             yield scrapy.Request(response.urljoin(next),callback=self.parse)
 
 
@@ -91,7 +93,7 @@ class craigCrawler(scrapy.Spider):
         entry = createEntry(pid,title,price,query,format,link)
         #downloadImage(image,pid) #we might need this later
 
-        print("Item found: " + str(pid))
+        LOG.info("Item found: " + str(pid))
 
         key = {'pid': entry['pid']}
         self.collection.update_one(key, {'$set':entry}, upsert=True)

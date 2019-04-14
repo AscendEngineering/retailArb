@@ -1,3 +1,6 @@
+import logging
+LOG = logging.getLogger("__main__")
+
 import urllib.request
 import re
 import constants
@@ -49,12 +52,14 @@ def getQuery(url):
 
 def collectUrls():
     retVal = []
-
+    #search term urls
     items = generateSearchTerms.getAllItems()
 
     for item in items:
-        print(constants.template + urllib.request.quote(item))
+        LOG.info(constants.template + urllib.request.quote(item))
         retVal.append(constants.template + urllib.request.quote(item))
+
+    #craigslist categories
 
     return retVal
 
@@ -95,7 +100,7 @@ def getEbaySearchKeywords(url,keyword):
     try:
         retVal = (urllib.parse.parse_qs(parsed.query))[keyword]
     except KeyError as e:
-        print("Keyword " + keyword + " does not exist")
+        LOG.info("Keyword " + keyword + " does not exist")
 
     return retVal[0]
 
@@ -106,7 +111,7 @@ def detectArbitrage(pid):
     retVal = None
 
     if(ebayData==None or craigslistData==None):
-        print("Error in reading DB for detectArbitrage(): " + str(pid))
+        LOG.error("Error in reading DB for detectArbitrage(): " + str(pid))
         return None
 
     if(ebayData["estimatedPrice"] >= craigslistData["price"]):

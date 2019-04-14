@@ -167,7 +167,23 @@ to need to see what the ebay search is. well, we can turn on the logging and the
 
 -alright now we want to generate these search terms. so the main issue that we are having is with beautiful soup.
 -BeautifulSoup for some reason is not picking up on the div that we want
--yeah beautiful soup was absolute shit. so we are back to scrapy. 
+-yeah beautiful soup was absolute shit. so we are back to scrapy.
+
+-so now we want to incorporate the categories search for craigslist....I guess what we can do is in the collectUrls we just add something in there that
+add on all of the craigslist category urls that we want as well...where are we going to store all these...i guess in constants as well...
+-this is a bit messy, but oh well
+
+-okay, so now our main mission is to figure out what is going on with the "Error in reading DB for detectArbitrage(): 6847635566"
+    -did we ever get an arbitrage?
+    -so it looks like we did not get any results for ebay....so the question is...were we supposed to?
+    -honestly, we just need a better way to log, straight up
+    -okay, so we basically need to figure out how we want to set up logging. we can either create a helper method
+    -we definitely need to set up a file that we create that we log to. However, I would also like to output to screen
+    -so yeah lets add it to a helper function, and when we import it into a function we will do the getLogger
+    -so basically how we are thinking about setting it up is that when we import the logger we automatically specify what file to log to
+    -so, what if we created a singleton?
+    -so we are back and working on logging. So.....we will create the singleton, and define the logger stuff when we create the singleton
+    the first time. then everytime
 
 
 TODO
@@ -236,8 +252,16 @@ __________________________________________________________________
 -factor in something that we can specify what sort of profit that we want to make
     -for example, we want to make at least 25% profit or something
 
--use ebay "whats it worth" instead of trying to figure out the price yourself
-    -https://explore.ebay.com/worth?keywords=Samsung%20Galaxy%20s8plus&activity=sold&siteId=EBAY-US&trend=all&catid=9355&lcf=11&level=1&interval=weekly
+-add in search terms that google says are trending. see if we can filter by "shopping"
+
+-it looks like we are not actually viewing the completed results on ebay. the mark is checked, but we are missing something...
+
+-Ideally, we would have a gui where we could
+    -view these images side by side
+    -somewhat automate the contact method (or generate an email that we could send and we would just need to enter in the address)
+    -clickable links
+
+
 
 DONE
 __________________________________________________________________
@@ -321,7 +345,14 @@ __________________________________________________________________
     -turned out that a lot of our craigslist scraper was broken...like a lot of it
 -figure out a better way to log the search keywords that you are generating urls for
     -well I store them in the sql tables, so I think that is good enough
-
+-Why does it seem that collect is not actually collecting all arbs
+    -the database entries are larger than the number of results we see in our csv
+    -yeah, we should have been defaulting to profit of 0/100, not 100/100. so we didnt even really miss out on anything
+-make the log output more readable
+    -did it
+-use ebay "whats it worth" instead of trying to figure out the price yourself
+    -https://explore.ebay.com/worth?keywords=Samsung%20Galaxy%20s8plus&activity=sold&siteId=EBAY-US&trend=all&catid=9355&lcf=11&level=1&interval=weekly
+    -eh, this is actually pretty similar to their normal search. Lets keep what we have
 
 RESOURCES
 __________________________________________________________________
