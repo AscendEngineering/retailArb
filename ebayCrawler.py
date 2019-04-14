@@ -51,36 +51,37 @@ class ebayCrawler(scrapy.Spider):
 
         #if there are no results still enter empty result in db
         if(results==None):
-            LOG.info("No Results Found(" + str(iter) + "): " + keywords)
+            LOG.info("No Results Found(" + response.request.meta['iter'] + "): " + keywords)
             writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
             return
         else:
             numResults = int(results)
 
+
         #if we do not have any results, modify keywords and try again
         if(numResults==0):
             newQuery=""
-            iter = response.request.meta['iter']
+            s_iter = response.request.meta['iter']
 
             #if we are on the first iteration, remove symbols and stop words
-            if(iter == 0):
+            if(s_iter == 0):
                 newQuery = arbHelpers.removeStopWords(arbHelpers.removeSymbols(keywords))
-
+            
             #if we are on the second iteration, remove numbers
-            if(iter == 1):
+            if(s_iter == 1):
                 newQuery = arbHelpers.removeNumbers(keywords)
 
             #if we are on the last iteration exit out
-            if(iter == 2):
-                LOG.info("No Results Found(" + str(iter) + "): " + keywords)
+            if(s_iter == 2):
+                LOG.info("No Results Found(" + str(s_iter) + "): " + keywords)
                 writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
                 return
 
-            LOG.info("Refining Search (" + str(iter) + "): " + keywords)
+            LOG.info("Refining Search (" + str(s_iter) + "): " + keywords)
             return scrapy.FormRequest.from_response(
                 response,
                 formdata={'_nkw': newQuery},
-                meta={"iter": iter+1},
+                meta={"iter": s_iter+1},
                 dont_filter=True,
                 callback=self.scrapeResults
             )
