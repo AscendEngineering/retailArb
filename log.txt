@@ -186,6 +186,8 @@ add on all of the craigslist category urls that we want as well...where are we g
     the first time. then everytime
 
 
+-so now we need to work on what is going on with this errorin reading arb issue
+
 TODO
 __________________________________________________________________
 -scrape
@@ -260,9 +262,17 @@ __________________________________________________________________
     -view these images side by side
     -somewhat automate the contact method (or generate an email that we could send and we would just need to enter in the address)
     -clickable links
+    -add in stopwords for nltk stopwords
 
 -install script
     -create logs/run_logs
+    -install mongodb if not already there
+
+-check if mongodb is running before we try to start arbitraging
+
+-change back generateSearchTerms so that it includes all searches instead of just "curtains"
+
+-add in a check for cleandb that if the database is empty, we just delete it
 
 DONE
 __________________________________________________________________
