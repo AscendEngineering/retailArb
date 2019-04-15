@@ -191,6 +191,10 @@ add on all of the craigslist category urls that we want as well...where are we g
 -I supposde what I can do....wait...I am going to need to run the collect script as well....so I might as well just take advantage of the bash gdrive
 that I have...we do need to store the date right before we run the arb though.
 -Yeah we can create this script. we can also push it to github.
+-or we can just make it on our remote server. lets just do that. we can make it in scripts
+
+-okay, so we will need to set the enviromental variables
+-but how w
 
 
 TODO
@@ -254,6 +258,8 @@ __________________________________________________________________
 -add in a check for cleandb that if the database is empty, we just delete it
 
 -split up arbHelpers into more module files
+
+-the next thing we are working on is to make sure that we are looking at "sold items" on ebay, and calculating our prices from them
 
 DONE
 __________________________________________________________________
