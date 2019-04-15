@@ -63,16 +63,20 @@ class ebayCrawler(scrapy.Spider):
             newQuery=""
             s_iter = response.request.meta['iter']
 
-            #if we are on the first iteration, remove symbols and stop words
+            #if we are on the last iteration exit out
             if(s_iter == 0):
-                newQuery = arbHelpers.removeStopWords(arbHelpers.removeSymbols(keywords))
-            
-            #if we are on the second iteration, remove numbers
+                #TODO
+                newQuery = arbHelpers.removeAdj(keywords)
+
+            #if we are on the first iteration, remove symbols and stop words
             if(s_iter == 1):
+                newQuery = arbHelpers.removeStopWords(arbHelpers.removeSymbols(keywords))
+
+            #if we are on the second iteration, remove numbers
+            if(s_iter == 2):
                 newQuery = arbHelpers.removeNumbers(keywords)
 
-            #if we are on the last iteration exit out
-            if(s_iter == 2):
+            if(s_iter == 3):
                 LOG.info("No Results Found(" + str(s_iter) + "): " + keywords)
                 writeToEbayDB(self.searchPid,-1,keywords,response.request.url)
                 return

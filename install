@@ -6,10 +6,12 @@ pip install -r installList
 #create log folder
 mkdir -p logs
 mkdir -p logs/run_logs
+mkdir -p arb_results
 
 python -c 'import nltk
 nltk.download("stopwords")
-nltk.download("punkt")'
+nltk.download("punkt")
+nltk.download("averaged_perceptron_tagger")'
 
 #make sure that mongodb is installed
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6

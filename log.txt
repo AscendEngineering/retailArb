@@ -187,6 +187,11 @@ add on all of the craigslist category urls that we want as well...where are we g
 
 
 -so now we need to work on what is going on with this errorin reading arb issue
+-so I would like to have the results uploaded to my google drive everyday, but the question is how would I do that.
+-I supposde what I can do....wait...I am going to need to run the collect script as well....so I might as well just take advantage of the bash gdrive
+that I have...we do need to store the date right before we run the arb though.
+-Yeah we can create this script. we can also push it to github.
+
 
 TODO
 __________________________________________________________________
@@ -206,34 +211,17 @@ __________________________________________________________________
 
 -figure out a way that we can also search using certain things from the descriptions
 
--we should probably add some error checking in here
-
--filter out "wanted" posts
-
 -create our own id system so that if there is a site that has the same pid as craigslist the two entries do not overlap
 
 -fix error where we are splicing on an image file that does not exist
     -we want to make sure that we are not erroring out on this and stopping the arbitrage
 
--we need to figure out a way to filter out generic words
-    -"moving out"
-    -adjectives
-    -non-brand names (coffee maker)
-
 -every morning delete the collection that is more than 7 days away
     -well, not this specific, but we should find a way to automate this
-
--implement keywords in collect.py
-
-
--the biggest way that we can improve this right now is to improve the search between sites.
-    -we need the price between sites to be more accurate
 
 -add in support to search for a whole category, like "video games"
 
 -have script automatically upload excel spreadsheet to google drive right before lunchtime
-
--add a progress bar (or any type of process indication)
 
 -log the output of the spider and print statements to 2 different locations, and have those save dynamically
     -this is going to be hard since we run the crawlers so many times again and again
@@ -241,8 +229,6 @@ __________________________________________________________________
 
 -might want to add a feature just to look for completed auctions only, not to just included them
     -we would need to scrape the page to find whether auction was completed or not
-
--factor out adjectives from search terms
 
 -factor in something that we can specify what sort of profit that we want to make
     -for example, we want to make at least 25% profit or something
@@ -266,6 +252,8 @@ __________________________________________________________________
 -change back generateSearchTerms so that it includes all searches instead of just "curtains"
 
 -add in a check for cleandb that if the database is empty, we just delete it
+
+-split up arbHelpers into more module files
 
 DONE
 __________________________________________________________________
@@ -363,10 +351,19 @@ __________________________________________________________________
 -add a max price
     -we did this for the collectArbs script
 -implement a better way to log our output, and switching it on and off
-
-
-
-
+-we should probably add some error checking in here
+    -I think we did an decent job at this
+-add a progress bar (or any type of process indication)
+-implement keywords in collect.py
+    -eh, dont really see the point in this anymore
+    -we are going for money making oppportunities, not specific items
+-filter out "wanted" posts
+    -this doesnt seem to be an major issue rn
+-we need to figure out a way to filter out generic words
+-factor out adjectives from search terms
+-the biggest way that we can improve this right now is to improve the search between sites.
+    -we need the price between sites to be more accurate
+    -I think this is as good as its going to get right now. we do not really have any better ways to figure out these prices
 
 RESOURCES
 __________________________________________________________________
