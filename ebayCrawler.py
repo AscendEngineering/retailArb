@@ -36,7 +36,7 @@ class ebayCrawler(scrapy.Spider):
         #search ebay
         return scrapy.FormRequest.from_response(
             response,
-            formdata={'_nkw': searchItem['title'],'LH_ItemCondition':'4','LH_Sold':'1'}, #second argument is for used products
+            formdata={'_nkw': searchItem['title'],'LH_ItemCondition':'4','LH_Sold':'1', 'LH_Complete':'1','rt':'nc'}, #second argument is for used products
             meta={"iter": 0},
             callback=self.scrapeResults
         )
