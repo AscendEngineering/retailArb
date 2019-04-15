@@ -9,7 +9,6 @@ import sys
 def main():
     parser = argparse.ArgumentParser(description='Grabbing Arbitrages Tool')
     parser.add_argument("--date","-d",help="specify the date you want to pull from (We only save 7 days back)", default=getDate())
-    parser.add_argument("--keywords","-s", help="keywords to search", default="")
     parser.add_argument("--maxprice",type=int, help="max price to pay",default=sys.maxsize)
     parser.add_argument("--minprofit",type=int, help="min profit to make",default=0)
     parser.add_argument("--percentProfit","-pp",type=float, help="percent profit you would like to make",default=0.0)
@@ -17,19 +16,17 @@ def main():
 
     #variables
     date = args.date
-    keywords = args.keywords
     maxPrice = args.maxprice
     minProfit = args.minprofit
     percentProfit = args.percentProfit
 
 
     #collectAll Arbs
-    print("Collecting...")
     file = constants.resultsFolder+generateFilename()+".csv"
-    collectArbs(file,date,"",maxPrice,minProfit,percentProfit)
-    print("...finished")
+    collectArbs(file,date,maxPrice,minProfit,percentProfit)
+    print(file)
 
-def collectArbs(file,date,keywords,maxPrice,minProfit,percentProfit):
+def collectArbs(file,date,maxPrice,minProfit,percentProfit):
 
     #open up the csv, write headers
     with open(file,'w',newline='') as csvfile:

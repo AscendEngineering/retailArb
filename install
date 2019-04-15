@@ -6,6 +6,7 @@ pip install -r installList
 #create log folder
 mkdir -p logs
 mkdir -p logs/run_logs
+mkdir -p arb_results
 
 python -c 'import nltk
 nltk.download("stopwords")
