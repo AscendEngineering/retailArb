@@ -47,8 +47,17 @@ items = [
 "Apple Watch",
 "FitBit",
 "Polar M430",
-"curtains"
-
+"curtains",
+"dewalt",
+"bosch",
+"makita",
+"craftsman",
+"ryobi",
+"milwaukee",
+"rigid",
+"black n decker",
+"lenox",
+"stihl"
 ]
 
 resultsFolder = 'arb_results/'

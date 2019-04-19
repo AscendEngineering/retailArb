@@ -65,7 +65,6 @@ class ebayCrawler(scrapy.Spider):
 
             #if we are on the last iteration exit out
             if(s_iter == 0):
-                #TODO
                 newQuery = arbHelpers.removeAdj(keywords)
 
             #if we are on the first iteration, remove symbols and stop words
