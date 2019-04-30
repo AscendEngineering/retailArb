@@ -83,7 +83,7 @@ class ebayCrawler(scrapy.Spider):
             LOG.info("Refining Search (" + str(s_iter) + "): " + keywords)
             return scrapy.FormRequest.from_response(
                 response.request.meta['orig_response'],
-                formdata={'_nkw': newQuery},
+                formdata={'_nkw': newQuery,"LH_ItemCondition":"4","LH_Sold":"1", "LH_Complete":"1","rt":"nc"},
                 meta={"iter": s_iter+1,'orig_response':response.request.meta['orig_response']},
                 dont_filter=True,
                 callback=self.scrapeResults
