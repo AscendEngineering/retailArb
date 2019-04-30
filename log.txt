@@ -194,8 +194,12 @@ that I have...we do need to store the date right before we run the arb though.
 -or we can just make it on our remote server. lets just do that. we can make it in scripts
 
 -okay, so we will need to set the enviromental variables
--but how w
+-so we are going to have to figure out exactly what we are doing here. we are passing along this url
 
+-so we keep adding these search terms onto the url, which makes it longer, more complex, and honestly I do not think it is returning the results that we want
+-so, we are going to need to figure out how to replace the keywords, not add more shit onto them
+
+-okay,so what else we got here...well. lets do property stuff
 
 TODO
 __________________________________________________________________
@@ -424,3 +428,10 @@ __________________________________________________________________
 
 
 { "_id" : ObjectId("5c6a0aca4dc5050d7efa9ebd"), "pid" : "6817367571", "title" : "Bears Superbowl XX Stein Mug", "price" : 15, "query" : "mug", "format" : "jpg", "link" : "https://chicago.craigslist.org/wcl/clt/d/bears-superbowl-xx-stein-mug/6817367571.html" }
+
+
+
+
+
+
+https://www.ebay.com/sch/i.html?_udlo=&_udhi=&_ftrt=901%7C901%7C901%7C901&_ftrv=1%7C1%7C1%7C1&_sabdlo=&_sabdhi=&_samilow=&_samihi=&_sadis=15%7C15%7C15%7C15&_stpos=08540%7C08540%7C08540%7C08540&_fsradio=%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1&_saslop=1%7C1%7C1%7C1&_sasl=&_sop=12%7C12%7C12%7C12&_dmd=1%7C1%7C1%7C1&_ipg=50%7C50%7C50%7C50&LH_ItemCondition=4%7C4%7C4%7C4&LH_Sold=1%7C1%7C1%7C1&LH_Complete=1%7C1%7C1%7C1&_fosrp=1&_from=R40%7CR40&_ftrt=901%7C901%7C901%7C901&_fsradio=%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1%7C%26LH_SpecificSeller%3D1&_sop=12%7C12%7C12%7C12&_sadis=15%7C15%7C15%7C15&LH_ItemCondition=4%7C4%7C4%7C4&_stpos=08540%7C08540%7C08540%7C08540&_odkw=Pottery+Barn+Vintage+Blacksmith+Mug+Tree&_saslop=1%7C1%7C1%7C1&_dmd=1%7C1%7C1%7C1&LH_Complete=1%7C1%7C1%7C1&LH_Sold=1%7C1%7C1%7C1&_osacat=0&_ipg=50%7C50%7C50%7C50&_ftrv=1%7C1%7C1%7C1&_from=R40&_trksid=m570.l1313&_sacat=0&_nkw=Pottery+Barn+Vintage+Blacksmith+Mug+Tree
