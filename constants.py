@@ -2,6 +2,7 @@
 distance = 5
 
 template = "https://chicago.craigslist.org/search/sss?sort=date&search_distance="+str(distance)+"&postal=60657&query="
+category_template = "https://chicago.craigslist.org/search/{}?search_distance="+str(distance)+"&postal=60657"
 
 imagesFolder = 'images/'
 
@@ -24,18 +25,14 @@ items = [
 "toy",
 "hockey stick",
 "lacrosse stick",
-#"iphone",
-#"samsung",
 "diabetic test strips",
 "fitness tracker",
-#"Apple",
 "xbox",
 "ps4",
 "ps3",
 "ps2",
 "360",
 "playstation",
-#"airpods",
 "headphones",
 "hot wheels",
 "stuffed animal",
@@ -59,6 +56,22 @@ items = [
 "lenox",
 "stihl"
 ]
+
+search_categories = {
+    "antiques": "ata" ,
+    "appliances": "ppa" ,
+    "auto parts": "pta" ,
+    "beauty+hlth": "haa",
+    "cell phones": "moa",
+    "collectibles": "cba",
+    "computer parts": "syp",
+    "computers": "sya" ,
+    "electronics": "ela",
+    "jewelry": "jwa",
+    "photo/video": "pha",
+    "tools": "tla",
+    "toys & games": "taa",
+}
 
 resultsFolder = 'arb_results/'
 

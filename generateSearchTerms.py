@@ -12,7 +12,7 @@ def main():
 
 
 def getAllItems():
-    items = []
+    items=[]
     items += getTrendingEbay()
     items += getStaticEntry()
 
