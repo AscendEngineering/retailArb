@@ -200,6 +200,8 @@ that I have...we do need to store the date right before we run the arb though.
 -so, we are going to need to figure out how to replace the keywords, not add more shit onto them
 
 -okay,so what else we got here...well. lets do property stuff
+-okay, so now we do want to search broader categories.
+
 
 TODO
 __________________________________________________________________
@@ -425,7 +427,20 @@ __________________________________________________________________
 
 -ebay api options: https://developer.ebay.com/docs#Ana
 
-
+-categories
+    -antiques
+    -appliances
+    -auto parts
+    -beauty+hlth
+    -cell phones
+    -collectibles
+    -computer parts
+    -computers
+    -electronics
+    -jewelry
+    -photo/video
+    -tools
+    -toys & games
 
 { "_id" : ObjectId("5c6a0aca4dc5050d7efa9ebd"), "pid" : "6817367571", "title" : "Bears Superbowl XX Stein Mug", "price" : 15, "query" : "mug", "format" : "jpg", "link" : "https://chicago.craigslist.org/wcl/clt/d/bears-superbowl-xx-stein-mug/6817367571.html" }
 

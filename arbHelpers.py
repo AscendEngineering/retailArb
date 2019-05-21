@@ -61,6 +61,10 @@ def collectUrls():
         retVal.append(constants.template + urllib.request.quote(item))
 
     #craigslist categories
+    for key,value in constants.search_categories.items():
+        category_url = (constants.category_template).format(value)
+        LOG.info(category_url)
+        retVal.append(category_url)
 
     return retVal
 

@@ -55,6 +55,7 @@ def main():
     #collect urls
     urls_to_crawl = collectUrls()
 
+    #to show status
     if(not args.verbose):
         bar = Bar('Processing', max=len(urls_to_crawl))
 
@@ -70,7 +71,6 @@ def main():
                 bar.next()
 
             outputfile = tempfile.mkstemp()[1]
-            #LOG.info("Output file: " + outputfile)
 
             #run the craigslist crawler
             yield runner.crawl(craigCrawler,[url],outputfile)
