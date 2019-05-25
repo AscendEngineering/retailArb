@@ -2,7 +2,7 @@
 distance = 5
 
 template = "https://chicago.craigslist.org/search/sss?sort=date&search_distance="+str(distance)+"&postal=60657&query="
-category_template = "https://chicago.craigslist.org/search/{}?search_distance="+str(distance)+"&postal=60657"
+category_template = "https://chicago.craigslist.org/search/{}?sort=date&search_distance="+str(distance)+"&postal=60657"
 
 imagesFolder = 'images/'
 

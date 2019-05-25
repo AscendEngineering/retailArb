@@ -39,7 +39,14 @@ class craigCrawler(scrapy.Spider):
     def parse(self, response):
         LOG.info("Cragslist Searching URL: " + response.request.url)
         url_list = []
+
+        #get the query
         query = getQuery(response.request.url)
+        
+        #if no query grab the category
+        if(query ==""):
+            query = getCategory(response.request.url)
+
 
         #get each post
         for result in response.css('p.result-info a.result-title::attr(href)').extract():
