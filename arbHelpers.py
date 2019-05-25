@@ -48,8 +48,18 @@ def downloadImage(src, name):
         urllib.request.urlretrieve(src,filelocation)
 
 def getQuery(url):
-    parsed = urlparse(url)
-    return urllib.parse.parse_qs(parsed[4])['query'][0]
+    retVal = ""
+    try:
+        parsed = urlparse(url)
+        retVal = urllib.parse.parse_qs(parsed[4])['query'][0]
+    except:
+        retVal = ""
+    return retVal
+
+def getCategory(url):
+    start = url.find("search") + 7
+    end = url.find('?')
+    return url[start:end]
 
 def collectUrls():
     retVal = []

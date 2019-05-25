@@ -201,6 +201,9 @@ that I have...we do need to store the date right before we run the arb though.
 
 -okay,so what else we got here...well. lets do property stuff
 -okay, so now we do want to search broader categories.
+-okay so we are definitely registering these new categories, and trying to search 
+-yeah supporting categories is going to take a lot more work since we need to make a special use case for it.
+-okay cool we fixed the bug. wasnt that bad...well...we will see later on if we fucked it up, but for right now I think we are good
 
 
 TODO
@@ -266,6 +269,8 @@ __________________________________________________________________
 -split up arbHelpers into more module files
 
 -the next thing we are working on is to make sure that we are looking at "sold items" on ebay, and calculating our prices from them
+
+-we need to overcome the obstacle of people not posting detailed enough descriptions
 
 DONE
 __________________________________________________________________
